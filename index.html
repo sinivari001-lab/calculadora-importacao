@@ -1633,6 +1633,12 @@
             <input type="number" id="m_icms_aliq" value="20.5" step="0.01" min="0" max="100" oninput="calcMulti()">
           </div>
         </div>
+        <div id="m_adic_cofins_row" class="grid-4" style="margin-top:8px;grid-template-columns: repeat(4, 1fr);">
+          <div class="field">
+            <label>Adic. COFINS-Import. %</label>
+            <input type="number" id="m_adic_cofins" value="0" step="0.01" min="0" max="5" oninput="calcMulti()" title="Adicional COFINS-Importação (0.8% em 2025, 0.6% em 2026) para NCMs específicos">
+          </div>
+        </div>
         <div style="margin-top:10px;padding:10px 12px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:10px;">
           <label style="font-size:0.85rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;display:block;margin-bottom:6px;">Estado de Destino (ICMS automático)</label>
           <select id="m_estado" onchange="onStateChange('m')" style="width:100%;padding:12px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1.05rem;cursor:pointer;transition:all 0.2s;">
@@ -4771,11 +4777,14 @@ function calcMulti() {
   const afrmm = v('m_afrmm');
   const outras = v('m_outras');
 
+  const isRemessa = document.getElementById('m_tipo_imp').value === 'remessa';
+
   const ii_aliq = v('m_ii_aliq') / 100;
   const ipi_aliq = v('m_ipi_aliq') / 100;
   const pis_aliq = v('m_pis_aliq') / 100;
   const cofins_aliq = v('m_cofins_aliq') / 100;
   const icms_aliq = v('m_icms_aliq') / 100;
+  const adic_cofins_aliq = v('m_adic_cofins') / 100;
 
   const icms_cred = document.getElementById('m_icms_cred').value === 'S';
   const ipi_cred = document.getElementById('m_ipi_cred').value === 'S';
@@ -4806,18 +4815,29 @@ function calcMulti() {
     const capatazia_rat = capatazia * ratio;
 
     const vmld_brl = vmle_brl + frete_rat_brl + seguro_rat_brl;
+    const vmld_usd = vmle_usd + frete_rat_usd + seguro_rat_usd;
 
-    // Taxes — per-product II/IPI override, fallback to global
+    // Taxes — Remessa Conforme aplica faixas por produto
     const rateio_taxas = (siscomex + afrmm + outras) * ratio;
-    const p_ii = (p.ii !== null && p.ii !== undefined ? p.ii / 100 : ii_aliq);
+    let ii_val;
+    if (isRemessa) {
+      if (vmld_usd <= 50) {
+        ii_val = vmld_brl * 0.20;
+      } else {
+        ii_val = Math.max(0, vmld_brl * 0.60 - 20 * dolar);
+      }
+    } else {
+      const p_ii = (p.ii !== null && p.ii !== undefined ? p.ii / 100 : ii_aliq);
+      ii_val = vmld_brl * p_ii;
+    }
     const p_ipi = (p.ipi !== null && p.ipi !== undefined ? p.ipi / 100 : ipi_aliq);
-    const ii_val = vmld_brl * p_ii;
     const ipi_bc = vmld_brl + ii_val;
     const ipi_val = ipi_bc * p_ipi;
     const pis_val = vmld_brl * pis_aliq;
     const cofins_val = vmld_brl * cofins_aliq;
+    const adic_cofins_val = vmld_brl * adic_cofins_aliq;
 
-    const total_antes_icms = vmld_brl + ii_val + ipi_val + pis_val + cofins_val + capatazia_rat + rateio_taxas;
+    const total_antes_icms = vmld_brl + ii_val + ipi_val + pis_val + cofins_val + adic_cofins_val + capatazia_rat + rateio_taxas;
     const icms_bc = icms_aliq < 1 ? total_antes_icms / (1 - icms_aliq) : total_antes_icms;
     const icms_val = icms_bc * icms_aliq;
 
@@ -4831,7 +4851,6 @@ function calcMulti() {
     // Desp extras rateadas
     const desp_rat = desp_extras * ratio;
 
-    // FIX: custo_total = icms_bc (already includes VMLD+II+IPI+PIS+COFINS+capatazia+rateio grossed up) + desp_rat - cred
     const custo_total = icms_bc + desp_rat - cred;
     const custo_unit = p.qtd > 0 ? custo_total / p.qtd : 0;
 
@@ -5021,11 +5040,11 @@ function captureState() {
     's_frete_interno','s_armazenagem','s_trading',
     's_ii_aliq','s_ii_cred','s_ipi_aliq','s_ipi_cred',
     's_pis_aliq','s_pis_cred','s_cofins_aliq','s_cofins_cred',
-    's_icms_aliq','s_icms_cred'
+    's_icms_aliq','s_icms_cred','s_adic_cofins','s_antidumping'
   ];
   const multiFields = [
     'm_dolar','m_tipo_imp','m_modalidade','m_ii_aliq','m_ipi_aliq',
-    'm_pis_aliq','m_cofins_aliq','m_icms_aliq',
+    'm_pis_aliq','m_cofins_aliq','m_icms_aliq','m_adic_cofins',
     'm_icms_cred','m_ipi_cred','m_pis_cred','m_cofins_cred',
     'm_frete','m_seguro','m_siscomex','m_capatazia','m_afrmm','m_outras',
     'm_despachante','m_taxa_bl','m_demurrage','m_frete_int','m_armazenagem','m_amostras'
