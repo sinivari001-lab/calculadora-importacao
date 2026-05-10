@@ -1275,6 +1275,7 @@
     <button class="tab active" onclick="switchTab('single')">NCM Único</button>
     <button class="tab" onclick="switchTab('multi')">Múltiplos NCMs</button>
     <button class="tab" onclick="switchTab('siscomex')">Calculadora SISCOMEX</button>
+    <button class="tab" onclick="switchTab('frete')">Calculadora de Frete</button>
   </div>
 
   <!-- ==================== ABA 1: NCM UNICO ==================== -->
@@ -1767,6 +1768,181 @@
     </div>
   </div>
 
+  <!-- ============================================================ -->
+  <!-- ABA 4: CALCULADORA DE FRETE -->
+  <!-- ============================================================ -->
+  <div id="tab-frete" class="tab-content">
+
+    <!-- Summary cards -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;">
+      <div style="background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:14px;text-align:center;">
+        <div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;">Caixas</div>
+        <div id="fr_sum_cx" style="font-size:1.4rem;font-weight:800;color:var(--accent2);margin-top:4px;">3</div>
+      </div>
+      <div style="background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:14px;text-align:center;">
+        <div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;">Peso Bruto</div>
+        <div id="fr_sum_peso" style="font-size:1.4rem;font-weight:800;color:var(--yellow);margin-top:4px;">33 kg</div>
+      </div>
+      <div style="background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:14px;text-align:center;">
+        <div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;">CBM</div>
+        <div id="fr_sum_cbm" style="font-size:1.4rem;font-weight:800;background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-top:4px;">0.032</div>
+      </div>
+      <div style="background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:14px;text-align:center;">
+        <div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;">Melhor Opcao</div>
+        <div id="fr_sum_best" style="font-size:1.1rem;font-weight:800;color:var(--green);margin-top:4px;">-</div>
+      </div>
+      <div style="background:var(--glass);backdrop-filter:blur(12px);border:1px solid rgba(255,217,61,0.3);border-radius:var(--radius);padding:14px;text-align:center;">
+        <div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;">Frete Cotado</div>
+        <div id="fr_sum_cotado" style="font-size:1.1rem;font-weight:800;color:var(--yellow);margin-top:4px;">-</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Dados da embalagem -->
+      <div class="card">
+        <div class="card-title">Dados da Embalagem</div>
+        <div class="grid-3">
+          <div class="field">
+            <label>Qtd Caixas</label>
+            <input type="number" id="fr_caixas" value="3" min="1" step="1" oninput="calcFrete()">
+          </div>
+          <div class="field">
+            <label>Peso/caixa (kg)</label>
+            <input type="number" id="fr_peso_cx" value="11" min="0" step="0.1" oninput="calcFrete()">
+          </div>
+          <div class="field">
+            <label>Unid/caixa</label>
+            <input type="number" id="fr_unid_cx" value="100" min="1" step="1" oninput="calcFrete()">
+          </div>
+        </div>
+        <div class="grid-3" style="margin-top:10px;">
+          <div class="field">
+            <label>Comprimento (cm)</label>
+            <input type="number" id="fr_dim_c" value="28" min="0" step="0.1" oninput="calcFrete()">
+          </div>
+          <div class="field">
+            <label>Largura (cm)</label>
+            <input type="number" id="fr_dim_l" value="18" min="0" step="0.1" oninput="calcFrete()">
+          </div>
+          <div class="field">
+            <label>Altura (cm)</label>
+            <input type="number" id="fr_dim_a" value="21.5" min="0" step="0.1" oninput="calcFrete()">
+          </div>
+        </div>
+        <div class="grid-3" style="margin-top:10px;">
+          <div class="field">
+            <label>Peso total manual (kg)</label>
+            <input type="number" id="fr_peso_manual" value="" min="0" step="0.1" placeholder="auto" oninput="calcFrete()">
+          </div>
+          <div class="field">
+            <label>Frete Cotado (R$)</label>
+            <input type="number" id="fr_cotado" value="1517" min="0" step="1" oninput="calcFrete()" style="border-color:rgba(255,217,61,0.4);color:var(--yellow);">
+          </div>
+          <div class="field">
+            <label>Dolar (R$)</label>
+            <input type="number" id="fr_dolar" value="5.70" min="0" step="0.01" oninput="syncDolar('fr')">
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarifas -->
+      <div class="card">
+        <div class="card-title">Tarifas por Modal</div>
+        <div class="grid-3">
+          <div class="field">
+            <label>Aereo (US$/kg)</label>
+            <input type="number" id="fr_tar_aereo" value="9.36" min="0" step="0.10" oninput="calcFrete()">
+          </div>
+          <div class="field">
+            <label>Maritimo (US$/CBM)</label>
+            <input type="number" id="fr_tar_mar" value="120" min="0" step="1" oninput="calcFrete()">
+          </div>
+          <div class="field">
+            <label>Courier (US$/kg)</label>
+            <input type="number" id="fr_tar_courier" value="12" min="0" step="0.50" oninput="calcFrete()">
+          </div>
+        </div>
+        <div class="grid-3" style="margin-top:10px;">
+          <div class="field">
+            <label>Min. aereo (US$)</label>
+            <input type="number" id="fr_min_aereo" value="150" min="0" step="10" oninput="calcFrete()">
+          </div>
+          <div class="field">
+            <label>Min. maritimo (US$)</label>
+            <input type="number" id="fr_min_mar" value="300" min="0" step="10" oninput="calcFrete()">
+          </div>
+          <div class="field">
+            <label>Min. courier (US$)</label>
+            <input type="number" id="fr_min_courier" value="80" min="0" step="10" oninput="calcFrete()">
+          </div>
+        </div>
+
+        <div style="margin-top:14px;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;">
+          <div style="font-size:0.65rem;color:var(--text3);line-height:1.6;">
+            <strong style="color:var(--text2);">Formulas:</strong><br>
+            <strong>Aereo:</strong> (CxLxA) / 6.000 = peso cubado &mdash; cobra maior entre real e cubado<br>
+            <strong>Maritimo:</strong> (CxLxA) / 1.000.000 = CBM &mdash; cobra por CBM ou tonelada<br>
+            <strong>Courier:</strong> (CxLxA) / 5.000 = peso cubado &mdash; cobra maior entre real e cubado
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cubagem -->
+    <div class="card">
+      <div class="card-title">Calculo de Cubagem</div>
+      <table class="result-table">
+        <thead>
+          <tr><th>Item</th><th>Detalhe</th><th class="right">Valor</th></tr>
+        </thead>
+        <tbody id="fr_tb_cubagem"></tbody>
+      </table>
+    </div>
+
+    <!-- Comparativo -->
+    <div class="card">
+      <div class="card-title">Comparativo de Modais</div>
+      <div id="fr_modais" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;"></div>
+    </div>
+
+    <!-- Detalhamento -->
+    <div class="card">
+      <div class="card-title">Detalhamento por Modal</div>
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>Modal</th>
+            <th class="right">Peso Cobrado</th>
+            <th class="right">Tarifa</th>
+            <th class="right">Frete US$</th>
+            <th class="right">Frete R$</th>
+            <th class="right">US$/kg</th>
+            <th class="right">R$/unidade</th>
+          </tr>
+        </thead>
+        <tbody id="fr_tb_detail"></tbody>
+      </table>
+    </div>
+
+    <!-- Analise vs cotacao -->
+    <div id="fr_analise_cotacao" class="card" style="display:none;">
+      <div class="card-title">Analise da Cotacao</div>
+      <div id="fr_analise_content"></div>
+    </div>
+
+    <!-- Usar frete na tab 1 -->
+    <div class="card" style="text-align:center;padding:16px;">
+      <div class="card-title">Integrar com Calculadora de Impostos</div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-accent" onclick="usarFreteTab1('aereo')" style="padding:10px 20px;">Usar Frete Aereo na Tab 1</button>
+        <button class="btn btn-outline" onclick="usarFreteTab1('maritimo')" style="padding:10px 20px;">Usar Frete Maritimo</button>
+        <button class="btn btn-outline" onclick="usarFreteTab1('courier')" style="padding:10px 20px;">Usar Frete Courier</button>
+        <button class="btn btn-outline" onclick="usarFreteTab1('cotado')" id="fr_btn_cotado" style="padding:10px 20px;border-color:rgba(255,217,61,0.4);color:var(--yellow);display:none;">Usar Frete Cotado</button>
+      </div>
+      <div id="fr_usado_msg" style="margin-top:8px;font-size:0.75rem;color:var(--green);display:none;"></div>
+    </div>
+  </div>
+
   <div class="footer">
     <div class="footer-brand">
       <div class="footer-logo">IC</div>
@@ -1798,7 +1974,7 @@ function fmtR(n) { return 'R$ ' + fmt(n); }
 // ============================================================
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach((t, i) => {
-    const ids = ['single', 'multi', 'siscomex'];
+    const ids = ['single', 'multi', 'siscomex', 'frete'];
     t.classList.toggle('active', ids[i] === tab);
   });
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -4938,13 +5114,264 @@ function calcSiscomex() {
 }
 
 // ============================================================
+// ABA 4: CALCULADORA DE FRETE
+// ============================================================
+function calcFrete() {
+  const caixas = Math.max(1, Math.floor(v('fr_caixas')));
+  const pesoCx = v('fr_peso_cx');
+  const unidCx = Math.max(1, Math.floor(v('fr_unid_cx')));
+  const dimC = v('fr_dim_c');
+  const dimL = v('fr_dim_l');
+  const dimA = v('fr_dim_a');
+  const dolar = v('fr_dolar');
+
+  const pesoManual = document.getElementById('fr_peso_manual').value;
+  const pesoTotal = pesoManual ? parseFloat(pesoManual) : pesoCx * caixas;
+  const totalUnid = unidCx * caixas;
+
+  // Volume
+  const volCm3 = dimC * dimL * dimA;
+  const volM3cx = volCm3 / 1000000;
+  const volM3 = volM3cx * caixas;
+
+  // Peso cubado por modal
+  const cubAereo = (volCm3 / 6000) * caixas;
+  const cubMar = volM3 * 1000;
+  const cubCourier = (volCm3 / 5000) * caixas;
+
+  // Peso taxavel
+  const taxAereo = Math.max(pesoTotal, cubAereo);
+  const taxMar = Math.max(pesoTotal / 1000, volM3);
+  const taxCourier = Math.max(pesoTotal, cubCourier);
+
+  const venceAereo = cubAereo > pesoTotal ? 'CUBADO' : 'REAL';
+  const venceMar = volM3 > (pesoTotal / 1000) ? 'CUBADO' : 'REAL';
+  const venceCourier = cubCourier > pesoTotal ? 'CUBADO' : 'REAL';
+
+  // Tarifas e custos
+  const tarAereo = v('fr_tar_aereo');
+  const tarMar = v('fr_tar_mar');
+  const tarCourier = v('fr_tar_courier');
+  const minAereo = v('fr_min_aereo');
+  const minMar = v('fr_min_mar');
+  const minCourier = v('fr_min_courier');
+
+  const frAereoUSD = Math.max(minAereo, taxAereo * tarAereo);
+  const frMarBase = Math.max(minMar, taxMar * tarMar);
+  const afrmmUSD = frMarBase * 0.08; // AFRMM 8% sobre frete maritimo
+  const frMarUSD = frMarBase + afrmmUSD;
+  const frCourierUSD = Math.max(minCourier, taxCourier * tarCourier);
+
+  const frAereoBRL = frAereoUSD * dolar;
+  const frMarBRL = frMarUSD * dolar;
+  const frCourierBRL = frCourierUSD * dolar;
+
+  const uAereo = frAereoBRL / totalUnid;
+  const uMar = frMarBRL / totalUnid;
+  const uCourier = frCourierBRL / totalUnid;
+
+  // US$/kg equivalente para cada modal
+  const kgAereo = pesoTotal > 0 ? frAereoUSD / pesoTotal : 0;
+  const kgMar = pesoTotal > 0 ? frMarUSD / pesoTotal : 0;
+  const kgCourier = pesoTotal > 0 ? frCourierUSD / pesoTotal : 0;
+
+  // Cotado
+  const cotado = v('fr_cotado');
+  const cotadoUSD = dolar > 0 ? cotado / dolar : 0;
+  const cotadoUnit = totalUnid > 0 ? cotado / totalUnid : 0;
+  const cotadoPerKg = pesoTotal > 0 ? cotadoUSD / pesoTotal : 0;
+
+  // Summary
+  document.getElementById('fr_sum_cx').textContent = caixas;
+  document.getElementById('fr_sum_peso').textContent = fmt(pesoTotal) + ' kg';
+  document.getElementById('fr_sum_cbm').textContent = volM3.toFixed(4);
+  document.getElementById('fr_sum_cotado').textContent = cotado > 0 ? fmtR(cotado) : '-';
+
+  // Modais array
+  const modais = [
+    { nome: 'Aereo', icon: '\u2708', color: '#3b82f6', peso: fmt(taxAereo) + ' kg', tipo: venceAereo, tarifa: 'US$ ' + fmt(tarAereo) + '/kg', frUSD: frAereoUSD, frBRL: frAereoBRL, unit: uAereo, kgUSD: kgAereo, prazo: '5-10 dias', extra: '' },
+    { nome: 'Maritimo', icon: '\uD83D\uDEA2', color: '#22c55e', peso: fmt(taxMar) + (venceMar === 'CUBADO' ? ' CBM' : ' ton'), tipo: venceMar, tarifa: 'US$ ' + fmt(tarMar) + '/W:M', frUSD: frMarUSD, frBRL: frMarBRL, unit: uMar, kgUSD: kgMar, prazo: '30-45 dias', extra: '(incl. AFRMM 8%: US$ ' + fmt(afrmmUSD) + ')' },
+    { nome: 'Courier', icon: '\uD83D\uDCE6', color: '#ff922b', peso: fmt(taxCourier) + ' kg', tipo: venceCourier, tarifa: 'US$ ' + fmt(tarCourier) + '/kg', frUSD: frCourierUSD, frBRL: frCourierBRL, unit: uCourier, kgUSD: kgCourier, prazo: '3-7 dias', extra: '' },
+  ];
+
+  if (cotado > 0) {
+    modais.push({ nome: 'Cotado', icon: '\uD83D\uDCB0', color: '#ffd93d', peso: 'US$ ' + fmt(cotadoPerKg) + '/kg', tipo: 'COTACAO', tarifa: 'US$ ' + fmt(cotadoPerKg) + '/kg', frUSD: cotadoUSD, frBRL: cotado, unit: cotadoUnit, kgUSD: cotadoPerKg, prazo: 'Conforme cotacao', extra: '' });
+  }
+
+  const sorted = [...modais].sort((a, b) => a.frUSD - b.frUSD);
+  const bestNome = sorted[0].nome;
+  document.getElementById('fr_sum_best').textContent = bestNome;
+
+  // Cubagem table
+  const rows = [
+    ['Dimensoes por caixa', dimC + ' x ' + dimL + ' x ' + dimA + ' cm', fmt(volCm3) + ' cm\u00B3', ''],
+    ['Volume por caixa', '', volM3cx.toFixed(6) + ' m\u00B3', ''],
+    ['Volume total (' + caixas + ' cx)', '', volM3.toFixed(4) + ' m\u00B3 (CBM)', 'highlight'],
+    ['Peso bruto total', caixas + ' cx x ' + fmt(pesoCx) + ' kg', fmt(pesoTotal) + ' kg', ''],
+    ['Total unidades', caixas + ' cx x ' + unidCx + ' un', totalUnid + ' un', ''],
+    ['', '', '', ''],
+    ['Peso cubado AEREO', 'vol / 6.000', fmt(cubAereo) + ' kg', ''],
+    ['Peso cubado COURIER', 'vol / 5.000', fmt(cubCourier) + ' kg', ''],
+    ['Peso cubado MARITIMO', 'CBM x 1.000', fmt(cubMar) + ' kg', ''],
+    ['', '', '', ''],
+    ['Peso taxavel AEREO', venceAereo === 'CUBADO' ? 'Cubado vence' : 'Real vence', fmt(taxAereo) + ' kg', venceAereo === 'CUBADO' ? 'highlight-yellow' : 'highlight'],
+    ['Peso taxavel COURIER', venceCourier === 'CUBADO' ? 'Cubado vence' : 'Real vence', fmt(taxCourier) + ' kg', venceCourier === 'CUBADO' ? 'highlight-yellow' : 'highlight'],
+    ['Peso taxavel MARITIMO', venceMar === 'CUBADO' ? 'CBM vence' : 'Ton vence', fmt(taxMar) + (venceMar === 'CUBADO' ? ' CBM' : ' ton'), venceMar === 'CUBADO' ? 'highlight-yellow' : 'highlight'],
+  ];
+  document.getElementById('fr_tb_cubagem').innerHTML = rows.map(([l, d, val, cls]) => {
+    if (!l && !d && !val) return '<tr><td colspan="3" style="padding:4px;"></td></tr>';
+    return '<tr class="' + cls + '"><td>' + l + '</td><td>' + d + '</td><td class="right" style="font-family:monospace;">' + val + '</td></tr>';
+  }).join('');
+
+  // Modais cards
+  const grid = document.getElementById('fr_modais');
+  grid.style.gridTemplateColumns = 'repeat(' + modais.length + ', 1fr)';
+  grid.innerHTML = modais.map(m => {
+    const isBest = m.nome === bestNome;
+    const isCotado = m.nome === 'Cotado';
+    return '<div style="border-radius:14px;padding:18px;border:2px solid ' + (isBest ? '#22c55e' : isCotado ? 'rgba(255,217,61,0.4)' : 'var(--border)') + ';background:var(--surface2);' + (isBest ? 'box-shadow:0 0 20px rgba(34,197,94,0.15);' : '') + '">' +
+      '<div style="font-size:0.9rem;font-weight:800;margin-bottom:12px;color:' + m.color + ';">' + m.icon + ' ' + m.nome + (isBest ? ' <span style="display:inline-block;padding:2px 8px;border-radius:6px;font-size:0.6rem;background:rgba(34,197,94,0.12);color:#22c55e;font-weight:700;text-transform:uppercase;">MELHOR</span>' : '') + '</div>' +
+      '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.8rem;color:var(--text2);border-bottom:1px solid rgba(42,42,62,0.3);"><span>' + (isCotado ? 'Tarifa equiv.' : 'Peso cobrado') + '</span><span style="font-family:monospace;font-weight:600;color:var(--text);">' + m.peso + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.8rem;color:var(--text2);border-bottom:1px solid rgba(42,42,62,0.3);"><span>Tipo</span><span><span style="display:inline-block;padding:2px 8px;border-radius:6px;font-size:0.6rem;font-weight:700;background:' + (m.tipo === 'REAL' ? 'rgba(34,197,94,0.12);color:#22c55e' : 'rgba(255,217,61,0.1);color:#ffd93d') + ';">' + m.tipo + '</span></span></div>' +
+      '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.8rem;color:var(--text2);border-bottom:1px solid rgba(42,42,62,0.3);"><span>Tarifa</span><span style="font-family:monospace;font-weight:600;color:var(--text);">' + m.tarifa + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.8rem;color:var(--text2);border-bottom:1px solid rgba(42,42,62,0.3);"><span>Prazo</span><span style="font-family:monospace;font-weight:600;color:var(--text);">' + m.prazo + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.8rem;color:var(--text2);border-bottom:1px solid rgba(42,42,62,0.3);"><span>Frete US$</span><span style="font-family:monospace;font-weight:600;color:var(--text);">US$ ' + fmt(m.frUSD) + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.8rem;color:var(--text2);border-bottom:1px solid rgba(42,42,62,0.3);"><span>Frete R$</span><span style="font-family:monospace;font-weight:600;color:var(--yellow);">' + fmtR(m.frBRL) + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.8rem;color:var(--text2);border-bottom:1px solid rgba(42,42,62,0.3);"><span>US$/kg equiv.</span><span style="font-family:monospace;font-weight:600;color:var(--accent2);">US$ ' + fmt(m.kgUSD) + '</span></div>' +
+      (m.extra ? '<div style="padding:4px 0;font-size:0.68rem;color:var(--text3);text-align:center;">' + m.extra + '</div>' : '') +
+      '<div style="margin-top:10px;padding-top:10px;border-top:2px solid var(--border);display:flex;justify-content:space-between;font-size:1.1rem;font-weight:800;"><span>R$/unidade</span><span style="color:' + (isBest ? '#22c55e' : 'var(--text)') + ';">' + fmtR(m.unit) + '</span></div>' +
+    '</div>';
+  }).join('');
+
+  // Detail table
+  document.getElementById('fr_tb_detail').innerHTML = modais.map(m => {
+    const isBest = m.nome === bestNome;
+    return '<tr class="' + (isBest ? 'highlight' : '') + '">' +
+      '<td>' + m.icon + ' ' + m.nome + (isBest ? ' <span style="display:inline-block;padding:2px 6px;border-radius:4px;font-size:0.55rem;background:rgba(34,197,94,0.12);color:#22c55e;font-weight:700;">MELHOR</span>' : '') + '</td>' +
+      '<td class="right" style="font-family:monospace;">' + m.peso + '</td>' +
+      '<td class="right" style="font-family:monospace;">' + m.tarifa + '</td>' +
+      '<td class="right" style="font-family:monospace;">US$ ' + fmt(m.frUSD) + '</td>' +
+      '<td class="right" style="font-family:monospace;">' + fmtR(m.frBRL) + '</td>' +
+      '<td class="right" style="font-family:monospace;color:var(--accent2);">US$ ' + fmt(m.kgUSD) + '</td>' +
+      '<td class="right" style="font-family:monospace;font-weight:700;">' + fmtR(m.unit) + '</td>' +
+    '</tr>';
+  }).join('');
+
+  // Cotado button visibility
+  const btnCotado = document.getElementById('fr_btn_cotado');
+  if (btnCotado) btnCotado.style.display = cotado > 0 ? '' : 'none';
+
+  // P1-5: Analise da cotacao
+  const analiseEl = document.getElementById('fr_analise_cotacao');
+  const analiseContent = document.getElementById('fr_analise_content');
+  if (cotado > 0 && analiseEl && analiseContent) {
+    analiseEl.style.display = '';
+    const comparisons = modais.filter(m => m.nome !== 'Cotado').map(m => {
+      const diff = ((cotadoUSD - m.frUSD) / m.frUSD * 100);
+      const diffBRL = cotado - m.frBRL;
+      const label = diff > 0 ? '+' + fmt(diff) + '%' : fmt(diff) + '%';
+      const color = diff > 5 ? 'var(--red)' : diff < -5 ? 'var(--green)' : 'var(--yellow)';
+      const verdict = diff > 10 ? 'CARO' : diff > 0 ? 'ACIMA' : diff > -5 ? 'NA MEDIA' : 'ABAIXO';
+      const vColor = diff > 10 ? 'rgba(239,68,68,0.12);color:#ef4444' : diff > 0 ? 'rgba(255,217,61,0.1);color:#ffd93d' : 'rgba(34,197,94,0.12);color:#22c55e';
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border-radius:8px;margin-bottom:6px;">' +
+        '<span style="font-size:0.82rem;color:var(--text2);">' + m.icon + ' vs ' + m.nome + '</span>' +
+        '<span style="font-size:0.82rem;color:var(--text3);">' + (diffBRL > 0 ? '+' : '') + fmtR(diffBRL) + '</span>' +
+        '<span style="font-family:monospace;font-weight:700;color:' + color + ';">' + label + '</span>' +
+        '<span style="display:inline-block;padding:2px 8px;border-radius:6px;font-size:0.6rem;font-weight:700;background:' + vColor + ';">' + verdict + '</span>' +
+      '</div>';
+    });
+    const cotadoKg = 'US$ ' + fmt(cotadoPerKg) + '/kg';
+    analiseContent.innerHTML =
+      '<div style="margin-bottom:10px;padding:10px 14px;background:var(--surface2);border-radius:10px;text-align:center;font-size:0.85rem;">' +
+        'Sua cotacao: <strong style="color:var(--yellow);">' + fmtR(cotado) + '</strong> = <strong style="color:var(--accent2);">' + cotadoKg + '</strong>' +
+      '</div>' +
+      comparisons.join('');
+  } else if (analiseEl) {
+    analiseEl.style.display = 'none';
+  }
+}
+
+// ============================================================
+// USAR FRETE NA TAB 1
+// ============================================================
+function usarFreteTab1(modal) {
+  const dolar = v('fr_dolar');
+  let freteUSD = 0;
+  if (modal === 'aereo') {
+    const caixas = Math.max(1, Math.floor(v('fr_caixas')));
+    const pesoCx = v('fr_peso_cx');
+    const pesoManual = document.getElementById('fr_peso_manual').value;
+    const pesoTotal = pesoManual ? parseFloat(pesoManual) : pesoCx * caixas;
+    const volCm3 = v('fr_dim_c') * v('fr_dim_l') * v('fr_dim_a');
+    const cubAereo = (volCm3 / 6000) * caixas;
+    const taxAereo = Math.max(pesoTotal, cubAereo);
+    freteUSD = Math.max(v('fr_min_aereo'), taxAereo * v('fr_tar_aereo'));
+  } else if (modal === 'maritimo') {
+    const caixas = Math.max(1, Math.floor(v('fr_caixas')));
+    const pesoCx = v('fr_peso_cx');
+    const pesoManual = document.getElementById('fr_peso_manual').value;
+    const pesoTotal = pesoManual ? parseFloat(pesoManual) : pesoCx * caixas;
+    const volM3 = (v('fr_dim_c') * v('fr_dim_l') * v('fr_dim_a') / 1000000) * caixas;
+    const taxMar = Math.max(pesoTotal / 1000, volM3);
+    const frBase = Math.max(v('fr_min_mar'), taxMar * v('fr_tar_mar'));
+    freteUSD = frBase * 1.08; // +AFRMM
+  } else if (modal === 'courier') {
+    const caixas = Math.max(1, Math.floor(v('fr_caixas')));
+    const pesoCx = v('fr_peso_cx');
+    const pesoManual = document.getElementById('fr_peso_manual').value;
+    const pesoTotal = pesoManual ? parseFloat(pesoManual) : pesoCx * caixas;
+    const volCm3 = v('fr_dim_c') * v('fr_dim_l') * v('fr_dim_a');
+    const cubCourier = (volCm3 / 5000) * caixas;
+    const taxCourier = Math.max(pesoTotal, cubCourier);
+    freteUSD = Math.max(v('fr_min_courier'), taxCourier * v('fr_tar_courier'));
+  } else if (modal === 'cotado') {
+    freteUSD = dolar > 0 ? v('fr_cotado') / dolar : 0;
+  }
+
+  // Set in tab 1 (frete internacional em USD)
+  const freteEl = document.getElementById('s_frete_int');
+  if (freteEl) {
+    freteEl.value = freteUSD.toFixed(2);
+  }
+  // Also set in multi tab
+  const freteMulti = document.getElementById('m_frete');
+  if (freteMulti) {
+    freteMulti.value = freteUSD.toFixed(2);
+  }
+
+  // Mudar via de transporte na tab 1
+  const viaMap = { aereo: 'aereo', maritimo: 'maritimo', courier: 'courier', cotado: '' };
+  const viaEl = document.getElementById('s_via_transporte');
+  if (viaEl && viaMap[modal]) {
+    viaEl.value = viaMap[modal];
+    if (typeof onViaTransporteChange === 'function') onViaTransporteChange('s');
+  }
+
+  calcSingle();
+  calcMulti();
+
+  // Show confirmation
+  const msgEl = document.getElementById('fr_usado_msg');
+  if (msgEl) {
+    const nomeModal = modal.charAt(0).toUpperCase() + modal.slice(1);
+    msgEl.textContent = 'Frete ' + nomeModal + ' (US$ ' + fmt(freteUSD) + ') aplicado nas abas NCM Unico e Multiplos NCMs';
+    msgEl.style.display = '';
+    setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
+  }
+}
+
+// ============================================================
 // DOLAR AUTOMATICO (AwesomeAPI - gratuita, sem chave)
 // ============================================================
 function syncDolar(from) {
   const val = document.getElementById(from + '_dolar').value;
-  const to = from === 's' ? 'm' : 's';
-  document.getElementById(to + '_dolar').value = val;
-  if (from === 's') calcMulti(); else calcSingle();
+  const allPrefixes = ['s', 'm', 'fr'];
+  allPrefixes.forEach(p => {
+    if (p !== from) document.getElementById(p + '_dolar').value = val;
+  });
+  if (from !== 's') calcSingle();
+  if (from !== 'm') calcMulti();
+  if (from !== 'fr') calcFrete();
 }
 
 async function fetchDolar() {
@@ -4952,15 +5379,17 @@ async function fetchDolar() {
     const res = await fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL');
     const data = await res.json();
     const rate = parseFloat(data.USDBRL.bid);
-    // Update both tabs
+    // Update all tabs
     document.getElementById('s_dolar').value = rate.toFixed(2);
     document.getElementById('m_dolar').value = rate.toFixed(2);
+    document.getElementById('fr_dolar').value = rate.toFixed(2);
     // Show update time
     const now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('dolar-status').textContent = `Atualizado: R$${rate.toFixed(4)} (${now})`;
     document.getElementById('dolar-status').style.color = 'var(--green)';
     calcSingle();
     calcMulti();
+    calcFrete();
     convertFromUSD();
   } catch (e) {
     document.getElementById('dolar-status').textContent = 'Falha ao buscar. Preencha manualmente.';
@@ -5272,14 +5701,14 @@ const AUDIENCE_CONFIG = {
   completo: {
     label: 'Modo Completo',
     hint: null,
-    tabs: ['single', 'multi', 'siscomex'],
+    tabs: ['single', 'multi', 'siscomex', 'frete'],
     defaults: {},
     showNCMRef: true
   },
   iniciante: {
     label: 'Modo Iniciante',
     hint: '<strong>Modo Iniciante:</strong> Campos simplificados para sua primeira importação. Preencha produto, frete e estado &mdash; o resto já está configurado com valores padrão.',
-    tabs: ['single'],
+    tabs: ['single', 'frete'],
     defaults: {
       's_tipo_imp': 'remessa',
       's_modalidade': 'simples',
@@ -5290,7 +5719,7 @@ const AUDIENCE_CONFIG = {
   revendedor: {
     label: 'Modo Revendedor',
     hint: '<strong>Modo Revendedor ML/E-commerce:</strong> Otimizado para quem revende. Remessa Conforme (60% II), Simples Nacional, com cálculo de custo unitário para precificação.',
-    tabs: ['single', 'multi'],
+    tabs: ['single', 'multi', 'frete'],
     defaults: {
       's_tipo_imp': 'remessa',
       's_modalidade': 'simples'
@@ -5300,7 +5729,7 @@ const AUDIENCE_CONFIG = {
   despachante: {
     label: 'Modo Despachante',
     hint: '<strong>Modo Despachante:</strong> Todos os campos habilitados. Créditos tributários, base ICMS completa, Siscomex detalhado, API Cosmos para NCM.',
-    tabs: ['single', 'multi', 'siscomex'],
+    tabs: ['single', 'multi', 'siscomex', 'frete'],
     defaults: {
       's_tipo_imp': 'remessa'
     },
@@ -5330,7 +5759,7 @@ function setAudience(audience) {
   }
 
   // Show/hide tabs
-  const tabNames = ['single', 'multi', 'siscomex'];
+  const tabNames = ['single', 'multi', 'siscomex', 'frete'];
   document.querySelectorAll('.tab').forEach((tab, i) => {
     const name = tabNames[i];
     if (config.tabs.includes(name)) {
@@ -5450,6 +5879,7 @@ renderNCMRef();
 calcSingle();
 renderProducts();
 calcSiscomex();
+calcFrete();
 convertFromUSD();
 // Auto-fetch dolar on page load
 fetchDolar();
