@@ -1298,6 +1298,9 @@
 
   <!-- ==================== ABA 1: NCM UNICO ==================== -->
   <div id="tab-single" class="tab-content active">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+      <button class="btn" onclick="clearSingle()" style="padding:6px 14px;font-size:0.7rem;color:var(--red);border:1px solid rgba(248,113,113,0.3);background:transparent;border-radius:8px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(248,113,113,0.1)'" onmouseout="this.style.background='transparent'">Limpar Campos</button>
+    </div>
     <div class="grid-2">
       <div>
         <!-- Dados Gerais -->
@@ -1790,6 +1793,10 @@
   <!-- ABA 4: CALCULADORA DE FRETE -->
   <!-- ============================================================ -->
   <div id="tab-frete" class="tab-content">
+
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+      <button class="btn" onclick="clearFrete()" style="padding:6px 14px;font-size:0.7rem;color:var(--red);border:1px solid rgba(248,113,113,0.3);background:transparent;border-radius:8px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(248,113,113,0.1)'" onmouseout="this.style.background='transparent'">Limpar Campos</button>
+    </div>
 
     <!-- Summary cards -->
     <div class="frete-summary" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;">
@@ -4951,6 +4958,19 @@ function clearAllProducts() {
   products.length = 0;
   products.push({ ncm: '', desc: 'Produto 1', qtd: 0, price: 0, m3: 0, ii: null, ipi: null });
   renderProducts();
+}
+
+function clearSingle() {
+  const fields = ['s_preco','s_qtd','s_frete_int','s_seguro','s_siscomex','s_capatazias','s_afrmm','s_auditoria','s_despachante','s_taxa_bl','s_anatel','s_frete_interno','s_armazenagem','s_trading','s_antidumping','s_preco_venda'];
+  fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = '0'; });
+  const ncm = document.getElementById('s_ncm'); if (ncm) ncm.value = '';
+  calcSingle();
+}
+
+function clearFrete() {
+  const defaults = { fr_caixas: '1', fr_peso_cx: '0', fr_unid_cx: '1', fr_dim_c: '0', fr_dim_l: '0', fr_dim_a: '0', fr_peso_manual: '', fr_cotado: '0' };
+  Object.entries(defaults).forEach(([id, val]) => { const el = document.getElementById(id); if (el) el.value = val; });
+  calcFrete();
 }
 
 function addTemplateProduct(grp) {
