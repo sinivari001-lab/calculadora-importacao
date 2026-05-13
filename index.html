@@ -1204,15 +1204,117 @@
         </div>
       </div>
 
-      <!-- MULTIPLOS NCMs -->
+      <!-- GUIA POR ABAS -->
+      <div style="height:1px;background:var(--border);margin:24px 0;"></div>
+      <h2 style="color:var(--text);font-size:1.1rem;font-weight:700;margin-bottom:16px;text-align:center;">Guia por Aba</h2>
+
+      <!-- ABA 1: NCM UNICO -->
       <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <h3 style="color:var(--accent);font-size:0.85rem;text-transform:uppercase;margin-bottom:10px;">Aba Múltiplos NCMs — Dicas</h3>
-        <div style="font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          Use quando importa <strong>vários produtos diferentes no mesmo envio</strong>. O frete é rateado entre eles.<br><br>
-          <strong>Atalho:</strong> Use os botões de template (Tech, Casa, Moda, Auto, Esporte, Beleza) para adicionar produtos de exemplo rapidamente.<br>
-          <strong>Busca:</strong> Em cada linha de produto, digite o nome ou código NCM para buscar.<br>
-          <strong>Remover:</strong> Clique no X vermelho para remover um produto da lista.<br>
-          <strong>Estado:</strong> Mude em qualquer aba — ele sincroniza automaticamente.
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.65rem;padding:4px 10px;border-radius:6px;">ABA 1</span>
+          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">NCM Unico</h3>
+        </div>
+        <div style="margin-left:10px;font-size:0.82rem;color:var(--text2);line-height:1.8;">
+          <strong>Quando usar:</strong> Voce vai importar <strong>1 produto so</strong> (ex: 500 formas de silicone, 300 fones bluetooth).<br><br>
+          <strong>Campos principais:</strong><br>
+          &bull; <strong style="color:var(--accent);">Preco unitario (US$):</strong> Preco FOB de cada unidade no fornecedor (Alibaba, 1688)<br>
+          &bull; <strong style="color:var(--accent);">Quantidade:</strong> Total de unidades que vai comprar<br>
+          &bull; <strong style="color:var(--accent);">NCM:</strong> Codigo de 8 digitos que define os impostos &mdash; digite o nome do produto e escolha nas sugestoes<br>
+          &bull; <strong style="color:var(--accent);">Frete internacional (US$):</strong> Valor total do frete que o agente de carga cobrou<br>
+          &bull; <strong style="color:var(--accent);">Tipo de importacao:</strong> Remessa Conforme (ate US$3.000) ou Formal (DI/Duimp)<br><br>
+          <strong>Resultado:</strong> Mostra o <strong>custo unitario em reais</strong> com todos os impostos (II, IPI, PIS, COFINS, ICMS) + despesas.<br><br>
+          <strong>Simulador de margem:</strong> Preencha o "Preco de Venda" pra ver sua margem bruta e lucro por unidade.<br>
+          <div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;margin-top:8px;">
+            <strong style="color:var(--accent);font-size:0.75rem;">DICA:</strong> <span style="font-size:0.78rem;">Use o botao "Exemplo" no topo pra ver um caso real preenchido. Mude a quantidade pra ver como o custo cai com volume.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 2: MULTIPLOS NCMs -->
+      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.65rem;padding:4px 10px;border-radius:6px;">ABA 2</span>
+          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Multiplos NCMs</h3>
+        </div>
+        <div style="margin-left:10px;font-size:0.82rem;color:var(--text2);line-height:1.8;">
+          <strong>Quando usar:</strong> Voce vai importar <strong>varios produtos diferentes</strong> no mesmo envio (ex: 200 capinhas + 300 fones + 100 relogios).<br><br>
+          <strong>Como funciona:</strong><br>
+          &bull; Cada linha e um produto com NCM, quantidade, preco e volume (m3) proprios<br>
+          &bull; O <strong>frete e rateado</strong> automaticamente entre os produtos pela proporcao do volume (m3) de cada um<br>
+          &bull; Cada produto tem seus proprios impostos (II% e IPI% baseados no NCM)<br>
+          &bull; O resultado mostra o <strong>custo unitario de cada produto</strong> separadamente<br><br>
+          <strong>Atalhos:</strong><br>
+          &bull; Use os botoes de template (<strong>Tech, Casa, Moda, Auto, Esporte, Beleza</strong>) pra adicionar produtos de exemplo<br>
+          &bull; Digite o nome ou NCM no campo de busca pra encontrar o produto<br>
+          &bull; Clique no <strong style="color:var(--red);">X</strong> vermelho pra remover um produto da lista<br>
+          <div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;margin-top:8px;">
+            <strong style="color:var(--accent);font-size:0.75rem;">DICA:</strong> <span style="font-size:0.78rem;">O campo "m3" e o volume que cada produto ocupa no container. Peca essa informacao ao fornecedor. Se nao souber, calcule: (C x L x A em cm) / 1.000.000.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 3: SISCOMEX -->
+      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.65rem;padding:4px 10px;border-radius:6px;">ABA 3</span>
+          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Calculadora SISCOMEX</h3>
+        </div>
+        <div style="margin-left:10px;font-size:0.82rem;color:var(--text2);line-height:1.8;">
+          <strong>O que e:</strong> A taxa Siscomex e uma taxa fixa cobrada pela Receita Federal em toda importacao formal (DI/Duimp). Nao se aplica a Remessa Conforme.<br><br>
+          <strong>Como funciona:</strong><br>
+          &bull; Informe o numero de <strong>adicoes</strong> da sua DI (cada produto com NCM diferente e uma adicao)<br>
+          &bull; A calculadora mostra o valor exato da taxa com as faixas oficiais<br><br>
+          <strong>Tabela de referencia:</strong><br>
+          &bull; 1a adicao: R$ 185,00 (fixa)<br>
+          &bull; 2a adicao: R$ 29,27<br>
+          &bull; 3a-5a: R$ 30,85 cada<br>
+          &bull; 6a-10a: R$ 23,14 cada<br>
+          &bull; 11a-20a: R$ 15,42 cada<br>
+          &bull; 21a-50a: R$ 7,71 cada<br>
+          &bull; 51+: R$ 3,86 cada<br>
+          <div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;margin-top:8px;">
+            <strong style="color:var(--accent);font-size:0.75rem;">QUANDO USAR:</strong> <span style="font-size:0.78rem;">Quando seu despachante pedir o valor do Siscomex ou quando voce quiser incluir essa despesa no calculo da aba NCM Unico (campo "Siscomex").</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 4: CALCULADORA DE FRETE -->
+      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.65rem;padding:4px 10px;border-radius:6px;">ABA 4</span>
+          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Calculadora de Frete</h3>
+        </div>
+        <div style="margin-left:10px;font-size:0.82rem;color:var(--text2);line-height:1.8;">
+          <strong>Quando usar:</strong> Antes de fechar com o agente de carga &mdash; pra saber quanto o frete <strong>deveria custar</strong> e comparar com a cotacao recebida.<br><br>
+          <strong>Campos:</strong><br>
+          &bull; <strong style="color:var(--accent);">Dimensoes da caixa (cm):</strong> Comprimento, largura e altura &mdash; peca ao fornecedor<br>
+          &bull; <strong style="color:var(--accent);">Peso por caixa (kg):</strong> Peso bruto (G.W.) que vem na packing list<br>
+          &bull; <strong style="color:var(--accent);">Qtd caixas:</strong> Quantas caixas no total<br>
+          &bull; <strong style="color:var(--accent);">Unid/caixa:</strong> Quantas unidades cabem em cada caixa<br>
+          &bull; <strong style="color:var(--accent);">Frete Cotado (R$):</strong> O valor que o agente de carga te passou &mdash; aparece como 4o modal pra comparar<br><br>
+          <strong>O que a calculadora faz:</strong><br>
+          &bull; Calcula o <strong>peso cubado</strong> (volumetrico) automaticamente pra cada modal<br>
+          &bull; Compara <strong>peso real vs cubado</strong> &mdash; o frete e cobrado pelo maior dos dois<br>
+          &bull; Mostra <strong>3 modais lado a lado</strong>: Aereo (5-10 dias), Maritimo (30-45 dias), Courier (3-7 dias)<br>
+          &bull; Destaca o <strong>melhor custo-beneficio</strong> em verde<br>
+          &bull; Calcula o <strong>R$ por unidade</strong> pra voce saber o impacto no custo final<br><br>
+          <strong>Integracao:</strong> Use os botoes "Usar Frete Aereo/Maritimo/Courier" pra enviar o valor direto pro campo de frete da aba NCM Unico.<br>
+          <div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;margin-top:8px;">
+            <strong style="color:var(--accent);font-size:0.75rem;">PESO CUBADO:</strong> <span style="font-size:0.78rem;">Aereo divide por 6.000, Courier por 5.000, Maritimo usa CBM. Se sua caixa e grande mas leve, o peso cubado vence e voce paga mais. Negocie caixas menores com o fornecedor!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DICAS GERAIS -->
+      <div style="margin-bottom:18px;background:linear-gradient(135deg, rgba(34,197,94,0.08), rgba(96,165,250,0.08));border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:16px 18px;">
+        <h3 style="color:#22c55e;font-size:0.85rem;text-transform:uppercase;margin-bottom:10px;">Dicas importantes</h3>
+        <div style="font-size:0.82rem;color:var(--text2);line-height:1.8;">
+          &bull; <strong>Dolar atualiza sozinho</strong> ao abrir a calculadora. Pode mudar manualmente pra simular cenarios.<br>
+          &bull; <strong>Estado salva automaticamente</strong> &mdash; nao precisa selecionar toda vez.<br>
+          &bull; <strong>Limpar Campos:</strong> Botao no canto superior direito de cada aba zera tudo pra nova simulacao.<br>
+          &bull; <strong>Tema claro/escuro:</strong> Alterne pelo botao no topo da pagina.<br>
+          &bull; <strong>Resultados sao estimativas</strong> &mdash; sempre confirme valores finais com seu despachante antes de fechar a compra.<br>
+          &bull; <strong>NCM errado = multa:</strong> Valide o NCM no <a href="https://portalunico.siscomex.gov.br/classif/" target="_blank" style="color:var(--accent);">Portal Siscomex</a> ou com seu despachante.
         </div>
       </div>
 
