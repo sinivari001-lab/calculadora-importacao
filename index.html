@@ -939,6 +939,24 @@
     color: var(--text);
   }
 
+  /* Frete tab mobile */
+  @media (max-width: 600px) {
+    .frete-summary { grid-template-columns: repeat(2, 1fr) !important; gap: 6px !important; }
+    .frete-summary > div { padding: 10px 6px !important; }
+    .frete-summary > div > div:first-child { font-size: 0.5rem !important; }
+    .frete-summary > div > div:last-child { font-size: 1rem !important; }
+    .frete-modais { grid-template-columns: 1fr !important; gap: 10px !important; }
+    #tab-frete .grid-2 { display: grid; grid-template-columns: 1fr !important; }
+    #tab-frete .grid-3 { grid-template-columns: 1fr !important; }
+    #tab-frete table { display: block; overflow-x: auto; white-space: nowrap; font-size: 0.75rem; }
+    #tab-frete table thead, #tab-frete table tbody { display: table; width: 100%; }
+    #tab-frete table td, #tab-frete table th { padding: 6px; }
+  }
+  @media (max-width: 768px) and (min-width: 601px) {
+    .frete-summary { grid-template-columns: repeat(3, 1fr) !important; }
+    .frete-modais { grid-template-columns: 1fr 1fr !important; }
+  }
+
   /* Print */
   @media print {
     body { background: #fff; color: #000; background-image: none; }
@@ -1774,7 +1792,7 @@
   <div id="tab-frete" class="tab-content">
 
     <!-- Summary cards -->
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;">
+    <div class="frete-summary" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;">
       <div style="background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:14px;text-align:center;">
         <div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;">Caixas</div>
         <div id="fr_sum_cx" style="font-size:1.4rem;font-weight:800;color:var(--accent2);margin-top:4px;">3</div>
@@ -1902,7 +1920,7 @@
     <!-- Comparativo -->
     <div class="card">
       <div class="card-title">Comparativo de Modais</div>
-      <div id="fr_modais" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;"></div>
+      <div id="fr_modais" class="frete-modais" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;"></div>
     </div>
 
     <!-- Detalhamento -->
