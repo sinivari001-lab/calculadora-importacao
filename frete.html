@@ -46,7 +46,7 @@
   }
 
   .container {
-    max-width: 960px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 24px 16px;
   }
@@ -89,16 +89,20 @@
     margin-bottom: 14px;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
   .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
 
   .field { display: flex; flex-direction: column; gap: 4px; }
   .field label {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 600;
     color: var(--text2);
     text-transform: uppercase;
@@ -144,6 +148,12 @@
 
   .btn-accent:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(124,92,252,0.3); }
 
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 0.7rem;
+    border-radius: 6px;
+  }
+
   .btn-outline {
     background: transparent;
     border: 1px solid var(--border);
@@ -152,10 +162,26 @@
 
   .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
 
+  .btn-danger {
+    background: var(--red-dim);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: var(--red);
+  }
+
+  .btn-danger:hover { background: rgba(239,68,68,0.2); }
+
+  .btn-green {
+    background: var(--green-dim);
+    border: 1px solid rgba(34,197,94,0.3);
+    color: var(--green);
+  }
+
+  .btn-green:hover { background: rgba(34,197,94,0.2); }
+
   /* Summary cards */
   .summary-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 12px;
     margin-bottom: 16px;
   }
@@ -178,9 +204,40 @@
   }
 
   .summary-card .value {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: 800;
     margin-top: 4px;
+  }
+
+  /* Product row */
+  .product-row {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  .product-row .product-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .product-row .product-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .product-row .product-summary {
+    font-size: 0.7rem;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
   }
 
   /* Results table */
@@ -212,6 +269,7 @@
   tr.highlight-yellow td { background: var(--yellow-dim); color: var(--yellow); font-weight: 700; }
   tr.total td { background: var(--accent-dim); color: var(--text); font-weight: 800; font-size: 1rem; border-top: 2px solid var(--accent); }
   tr.subtotal td { color: var(--text); font-weight: 700; border-top: 1px solid var(--border); }
+  tr.separator td { padding: 4px; border: none; }
 
   td.right, th.right { text-align: right; }
   td.mono { font-family: 'JetBrains Mono', monospace; }
@@ -304,38 +362,70 @@
 
   .info-box strong { color: var(--text2); }
 
-  /* Boxes visual */
-  .boxes-visual {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin: 12px 0;
+  /* Per-product breakdown */
+  .product-breakdown {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 16px;
   }
 
-  .box-icon {
-    width: 48px;
-    height: 48px;
+  .product-breakdown-card {
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.6rem;
-    color: var(--text3);
-    font-weight: 700;
-    transition: all 0.2s;
+    border-radius: 10px;
+    padding: 16px;
   }
 
-  .box-icon:hover { border-color: var(--accent); color: var(--accent); }
+  .product-breakdown-card .pb-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .product-breakdown-card .pb-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .product-breakdown-card .pb-item {
+    text-align: center;
+  }
+
+  .product-breakdown-card .pb-item .pb-label {
+    font-size: 0.55rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .product-breakdown-card .pb-item .pb-val {
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text);
+    margin-top: 2px;
+  }
+
+  .cotado-input {
+    border-color: rgba(255,217,61,0.4) !important;
+    color: var(--yellow) !important;
+  }
 
   @media (max-width: 768px) {
-    .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr 1fr; }
-    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-2, .grid-3, .grid-4, .grid-5, .grid-6 { grid-template-columns: 1fr 1fr; }
+    .summary-grid { grid-template-columns: repeat(3, 1fr); }
+    .product-breakdown-card .pb-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (max-width: 480px) {
-    .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; }
+    .grid-2, .grid-3, .grid-4, .grid-5, .grid-6 { grid-template-columns: 1fr; }
     .summary-grid { grid-template-columns: 1fr 1fr; }
   }
 </style>
@@ -347,85 +437,60 @@
 
   <header>
     <h1>Calculadora de Frete Internacional</h1>
-    <p>Aereo &middot; Maritimo &middot; Courier &mdash; Peso cubado vs real, CBM e custo estimado</p>
+    <p>Multi-produto &middot; Aereo &middot; Maritimo &middot; Courier &mdash; Peso cubado vs real, CBM e custo estimado</p>
   </header>
 
   <!-- SUMMARY CARDS -->
   <div class="summary-grid">
     <div class="summary-card">
+      <div class="label">Produtos</div>
+      <div class="value" id="sum_produtos" style="color:var(--accent2);">2</div>
+    </div>
+    <div class="summary-card">
       <div class="label">Total Caixas</div>
-      <div class="value" id="sum_caixas" style="color:var(--accent2);">3</div>
+      <div class="value" id="sum_caixas" style="color:var(--accent2);">2</div>
     </div>
     <div class="summary-card">
       <div class="label">Peso Bruto</div>
-      <div class="value" id="sum_peso" style="color:var(--yellow);">54 kg</div>
+      <div class="value" id="sum_peso" style="color:var(--yellow);">32 kg</div>
     </div>
     <div class="summary-card">
       <div class="label">Volume (CBM)</div>
-      <div class="value" id="sum_cbm" style="background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">0.082</div>
+      <div class="value" id="sum_cbm" style="background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">0.036</div>
     </div>
     <div class="summary-card">
       <div class="label">Melhor Opcao</div>
       <div class="value" id="sum_best" style="color:var(--green);font-size:1.1rem;">-</div>
     </div>
     <div class="summary-card" style="border:1px solid var(--yellow);border-color:rgba(255,217,61,0.3);">
-      <div class="label">Frete Cotado</div>
-      <div class="value" id="sum_cotado" style="color:var(--yellow);font-size:1.1rem;">R$ 2.337</div>
+      <div class="label">Total Cotado</div>
+      <div class="value" id="sum_cotado" style="color:var(--yellow);font-size:1.1rem;">-</div>
     </div>
   </div>
 
-  <!-- DADOS DA EMBALAGEM -->
+  <!-- CONFIGURACOES GERAIS -->
   <div class="card">
-    <div class="card-title">Dados da Embalagem</div>
-    <div class="grid-5">
+    <div class="card-title">Configuracoes Gerais</div>
+    <div class="grid-3">
       <div class="field">
-        <label>Qtd Caixas</label>
-        <input type="number" id="qtd_caixas" value="3" min="1" step="1" oninput="calc()">
+        <label>Dolar (R$)</label>
+        <input type="number" id="f_dolar" value="5.70" min="0" step="0.01" oninput="calc()">
       </div>
-      <div class="field">
-        <label>Peso/caixa (kg)</label>
-        <input type="number" id="peso_caixa" value="11" min="0" step="0.1" oninput="calc()">
+      <div class="field" style="justify-content:flex-end;">
+        <button class="btn btn-accent" onclick="fetchDolar()" style="width:100%;padding:10px;">Atualizar Dolar</button>
       </div>
-      <div class="field">
-        <label>Comprimento (cm)</label>
-        <input type="number" id="dim_c" value="28" min="0" step="0.1" oninput="calc()">
-      </div>
-      <div class="field">
-        <label>Largura (cm)</label>
-        <input type="number" id="dim_l" value="18" min="0" step="0.1" oninput="calc()">
-      </div>
-      <div class="field">
-        <label>Altura (cm)</label>
-        <input type="number" id="dim_a" value="21.5" min="0" step="0.1" oninput="calc()">
+      <div class="field" style="justify-content:flex-end;">
+        <button class="btn btn-green btn-sm" onclick="addProduct()" style="width:100%;padding:10px;">+ Adicionar Produto</button>
       </div>
     </div>
+  </div>
 
-    <div style="margin-top:14px;">
-      <div class="grid-5">
-        <div class="field">
-          <label>Unidades por caixa</label>
-          <input type="number" id="unid_caixa" value="100" min="1" step="1" oninput="calc()">
-        </div>
-        <div class="field">
-          <label>Dolar (R$)</label>
-          <input type="number" id="f_dolar" value="5.70" min="0" step="0.01" oninput="calc()">
-        </div>
-        <div class="field">
-          <label>Peso total manual (kg)</label>
-          <input type="number" id="peso_manual" value="" min="0" step="0.1" placeholder="auto" oninput="calc()" title="Deixe vazio para calcular automaticamente">
-        </div>
-        <div class="field">
-          <label>Frete Cotado (R$)</label>
-          <input type="number" id="frete_cotado" value="" min="0" step="1" oninput="calc()" style="border-color:rgba(255,217,61,0.4);color:var(--yellow);">
-        </div>
-        <div class="field" style="justify-content:flex-end;">
-          <button class="btn btn-accent" onclick="fetchDolar()" style="width:100%;padding:10px;">Atualizar Dolar</button>
-        </div>
-      </div>
+  <!-- PRODUTOS -->
+  <div class="card">
+    <div class="card-title">
+      <span>Produtos</span>
     </div>
-
-    <!-- Boxes visual -->
-    <div class="boxes-visual" id="boxes_visual"></div>
+    <div id="products_container"></div>
   </div>
 
   <!-- TARIFAS POR MODAL -->
@@ -434,7 +499,7 @@
     <div class="grid-3">
       <div class="field">
         <label>Aereo (US$/kg cubado)</label>
-        <input type="number" id="tarifa_aereo" value="8.07" min="0" step="0.10" oninput="calc()">
+        <input type="number" id="tarifa_aereo" value="25" min="0" step="0.10" oninput="calc()">
       </div>
       <div class="field">
         <label>Maritimo (US$/CBM)</label>
@@ -461,9 +526,15 @@
     </div>
   </div>
 
+  <!-- PER-PRODUCT BREAKDOWN -->
+  <div class="card">
+    <div class="card-title">Detalhamento por Produto</div>
+    <div class="product-breakdown" id="product_breakdown"></div>
+  </div>
+
   <!-- RESULTADO: CUBAGEM -->
   <div class="card">
-    <div class="card-title">Calculo de Cubagem</div>
+    <div class="card-title">Calculo de Cubagem (Consolidado)</div>
     <table>
       <thead>
         <tr><th>Item</th><th>Detalhe</th><th class="right">Valor</th></tr>
@@ -508,43 +579,134 @@
 </div>
 
 <script>
+// Product data - pre-filled with Simulacao 2
+let products = [
+  { nome: 'Produto 1', caixas: 1, peso: 18, dimC: 27, dimL: 21, dimA: 26, unidades: 250, cotado: 2287 },
+  { nome: 'Produto 2', caixas: 1, peso: 14, dimC: 30, dimL: 28, dimA: 25, unidades: 100, cotado: 1917 },
+];
+
 function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
 function fmt(n) { return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function fmtR(n) { return 'R$ ' + fmt(n); }
 function fmtU(n) { return 'US$ ' + fmt(n); }
 
+function renderProducts() {
+  const container = document.getElementById('products_container');
+  container.innerHTML = products.map((p, i) => `
+    <div class="product-row">
+      <div class="product-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="product-label">${p.nome}</span>
+          <span class="product-summary" id="psummary_${i}"></span>
+        </div>
+        ${products.length > 1 ? `<button class="btn btn-danger btn-sm" onclick="removeProduct(${i})">Remover</button>` : ''}
+      </div>
+      <div class="grid-6">
+        <div class="field">
+          <label>Nome</label>
+          <input type="text" value="${p.nome}" oninput="products[${i}].nome=this.value;calc()" style="text-align:left;font-family:inherit;">
+        </div>
+        <div class="field">
+          <label>Qtd Caixas</label>
+          <input type="number" value="${p.caixas}" min="1" step="1" oninput="products[${i}].caixas=+this.value||1;calc()">
+        </div>
+        <div class="field">
+          <label>Peso/caixa (kg)</label>
+          <input type="number" value="${p.peso}" min="0" step="0.1" oninput="products[${i}].peso=+this.value||0;calc()">
+        </div>
+        <div class="field">
+          <label>Comprimento (cm)</label>
+          <input type="number" value="${p.dimC}" min="0" step="0.1" oninput="products[${i}].dimC=+this.value||0;calc()">
+        </div>
+        <div class="field">
+          <label>Largura (cm)</label>
+          <input type="number" value="${p.dimL}" min="0" step="0.1" oninput="products[${i}].dimL=+this.value||0;calc()">
+        </div>
+        <div class="field">
+          <label>Altura (cm)</label>
+          <input type="number" value="${p.dimA}" min="0" step="0.1" oninput="products[${i}].dimA=+this.value||0;calc()">
+        </div>
+      </div>
+      <div class="grid-6" style="margin-top:8px;">
+        <div class="field">
+          <label>Unid/caixa</label>
+          <input type="number" value="${p.unidades}" min="1" step="1" oninput="products[${i}].unidades=+this.value||1;calc()">
+        </div>
+        <div class="field">
+          <label>Frete Cotado (R$)</label>
+          <input type="number" value="${p.cotado || ''}" min="0" step="1" oninput="products[${i}].cotado=+this.value||0;calc()" class="cotado-input" placeholder="opcional">
+        </div>
+        <div class="field" style="grid-column: span 4;">
+          <label>&nbsp;</label>
+          <div class="product-summary" id="pinline_${i}" style="padding:10px;font-size:0.78rem;color:var(--text2);"></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  calc();
+}
+
+function addProduct() {
+  const n = products.length + 1;
+  products.push({ nome: `Produto ${n}`, caixas: 1, peso: 10, dimC: 30, dimL: 20, dimA: 20, unidades: 100, cotado: 0 });
+  renderProducts();
+}
+
+function removeProduct(i) {
+  if (products.length <= 1) return;
+  products.splice(i, 1);
+  renderProducts();
+}
+
 function calc() {
-  const caixas = Math.max(1, Math.floor(v('qtd_caixas')));
-  const pesoCaixa = v('peso_caixa');
-  const dimC = v('dim_c');
-  const dimL = v('dim_l');
-  const dimA = v('dim_a');
-  const unidCaixa = Math.max(1, Math.floor(v('unid_caixa')));
   const dolar = v('f_dolar');
 
-  const pesoManual = document.getElementById('peso_manual').value;
-  const pesoTotal = pesoManual ? parseFloat(pesoManual) : pesoCaixa * caixas;
-  const totalUnidades = unidCaixa * caixas;
+  // Aggregate per product
+  const prods = products.map((p, i) => {
+    const caixas = Math.max(1, Math.floor(p.caixas));
+    const pesoTotal = p.peso * caixas;
+    const totalUnid = p.unidades * caixas;
+    const volCm3 = p.dimC * p.dimL * p.dimA;
+    const volM3 = volCm3 / 1000000;
+    const volTotalM3 = volM3 * caixas;
 
-  // Volume por caixa em m³
-  const volCaixaM3 = (dimC * dimL * dimA) / 1000000;
-  const volTotalM3 = volCaixaM3 * caixas;
+    const pesoCubadoAereo = (volCm3 / 6000) * caixas;
+    const pesoCubadoCourier = (volCm3 / 5000) * caixas;
+    const pesoCubadoMaritimo = volTotalM3 * 1000;
 
-  // Peso cubado por modal
-  const volCaixaCm3 = dimC * dimL * dimA;
-  const pesoCubadoAereo = (volCaixaCm3 / 6000) * caixas;
-  const pesoCubadoMaritimo = volTotalM3 * 1000; // 1 CBM = 1000 kg (1 ton)
-  const pesoCubadoCourier = (volCaixaCm3 / 5000) * caixas;
+    return {
+      ...p,
+      idx: i,
+      caixas,
+      pesoTotal,
+      totalUnid,
+      volCm3,
+      volM3,
+      volTotalM3,
+      pesoCubadoAereo,
+      pesoCubadoCourier,
+      pesoCubadoMaritimo,
+    };
+  });
 
-  // Peso taxavel (chargeable weight)
-  const pesoTaxavelAereo = Math.max(pesoTotal, pesoCubadoAereo);
-  const pesoTaxavelMaritimo = Math.max(pesoTotal / 1000, volTotalM3); // em tons vs CBM
-  const pesoTaxavelCourier = Math.max(pesoTotal, pesoCubadoCourier);
+  // Totals
+  const totalCaixas = prods.reduce((s, p) => s + p.caixas, 0);
+  const totalPeso = prods.reduce((s, p) => s + p.pesoTotal, 0);
+  const totalCBM = prods.reduce((s, p) => s + p.volTotalM3, 0);
+  const totalUnidades = prods.reduce((s, p) => s + p.totalUnid, 0);
+  const totalPesoCubadoAereo = prods.reduce((s, p) => s + p.pesoCubadoAereo, 0);
+  const totalPesoCubadoCourier = prods.reduce((s, p) => s + p.pesoCubadoCourier, 0);
+  const totalPesoCubadoMaritimo = prods.reduce((s, p) => s + p.pesoCubadoMaritimo, 0);
+  const totalCotado = prods.reduce((s, p) => s + (p.cotado || 0), 0);
 
-  // Quem manda: real ou cubado?
-  const aereoVence = pesoCubadoAereo > pesoTotal ? 'CUBADO' : 'REAL';
-  const maritimoVence = volTotalM3 > (pesoTotal / 1000) ? 'CUBADO' : 'REAL';
-  const courierVence = pesoCubadoCourier > pesoTotal ? 'CUBADO' : 'REAL';
+  // Peso taxavel
+  const pesoTaxavelAereo = Math.max(totalPeso, totalPesoCubadoAereo);
+  const pesoTaxavelMaritimo = Math.max(totalPeso / 1000, totalCBM);
+  const pesoTaxavelCourier = Math.max(totalPeso, totalPesoCubadoCourier);
+
+  const aereoVence = totalPesoCubadoAereo > totalPeso ? 'CUBADO' : 'REAL';
+  const maritimoVence = totalCBM > (totalPeso / 1000) ? 'CUBADO' : 'REAL';
+  const courierVence = totalPesoCubadoCourier > totalPeso ? 'CUBADO' : 'REAL';
 
   // Tarifas
   const tarifaAereo = v('tarifa_aereo');
@@ -556,7 +718,6 @@ function calc() {
 
   // Custos
   const freteAereoUSD = Math.max(minAereo, pesoTaxavelAereo * tarifaAereo);
-  // Maritimo: cobrado por CBM (usando o maior entre CBM e tonelagem)
   const freteMarUSD = Math.max(minMaritimo, pesoTaxavelMaritimo * tarifaMaritimo);
   const freteCourierUSD = Math.max(minCourier, pesoTaxavelCourier * tarifaCourier);
 
@@ -564,21 +725,21 @@ function calc() {
   const freteMarBRL = freteMarUSD * dolar;
   const freteCourierBRL = freteCourierUSD * dolar;
 
-  const unitAereo = freteAereoBRL / totalUnidades;
-  const unitMar = freteMarBRL / totalUnidades;
-  const unitCourier = freteCourierBRL / totalUnidades;
+  const unitAereo = totalUnidades > 0 ? freteAereoBRL / totalUnidades : 0;
+  const unitMar = totalUnidades > 0 ? freteMarBRL / totalUnidades : 0;
+  const unitCourier = totalUnidades > 0 ? freteCourierBRL / totalUnidades : 0;
 
-  // Frete cotado
-  const freteCotado = v('frete_cotado');
-  const cotadoUSD = dolar > 0 ? freteCotado / dolar : 0;
-  const cotadoUnit = totalUnidades > 0 ? freteCotado / totalUnidades : 0;
-  const cotadoPerKg = pesoTotal > 0 ? cotadoUSD / pesoTotal : 0;
+  // Cotado
+  const cotadoUSD = dolar > 0 ? totalCotado / dolar : 0;
+  const cotadoUnit = totalUnidades > 0 ? totalCotado / totalUnidades : 0;
+  const cotadoPerKg = totalPeso > 0 ? cotadoUSD / totalPeso : 0;
 
   // Summary cards
-  document.getElementById('sum_caixas').textContent = caixas;
-  document.getElementById('sum_peso').textContent = fmt(pesoTotal) + ' kg';
-  document.getElementById('sum_cbm').textContent = volTotalM3.toFixed(4);
-  document.getElementById('sum_cotado').textContent = freteCotado > 0 ? fmtR(freteCotado) : '-';
+  document.getElementById('sum_produtos').textContent = products.length;
+  document.getElementById('sum_caixas').textContent = totalCaixas;
+  document.getElementById('sum_peso').textContent = fmt(totalPeso) + ' kg';
+  document.getElementById('sum_cbm').textContent = totalCBM.toFixed(4);
+  document.getElementById('sum_cotado').textContent = totalCotado > 0 ? fmtR(totalCotado) : '-';
 
   // Best option
   const fretes = [
@@ -589,102 +750,135 @@ function calc() {
   fretes.sort((a, b) => a.val - b.val);
   document.getElementById('sum_best').textContent = fretes[0].nome;
 
-  // Boxes visual
-  const boxesEl = document.getElementById('boxes_visual');
-  let boxesHTML = '';
-  for (let i = 0; i < Math.min(caixas, 50); i++) {
-    boxesHTML += `<div class="box-icon">${dimC}x${dimL}<br>${dimA}h</div>`;
-  }
-  if (caixas > 50) boxesHTML += `<div class="box-icon" style="color:var(--accent);">+${caixas - 50}</div>`;
-  boxesEl.innerHTML = boxesHTML;
+  // Per-product inline summaries
+  prods.forEach((p, i) => {
+    const el = document.getElementById(`pinline_${i}`);
+    if (el) {
+      el.innerHTML = `${p.caixas} cx &middot; ${fmt(p.pesoTotal)} kg &middot; ${p.volTotalM3.toFixed(4)} CBM &middot; ${p.totalUnid} un` +
+        (p.cotado > 0 ? ` &middot; <span style="color:var(--yellow);">Cotado: ${fmtR(p.cotado)}</span>` : '');
+    }
+  });
+
+  // Per-product breakdown cards
+  const breakdownEl = document.getElementById('product_breakdown');
+  breakdownEl.innerHTML = prods.map(p => {
+    const pesoTaxAereo = Math.max(p.pesoTotal, p.pesoCubadoAereo);
+    const pesoTaxCourier = Math.max(p.pesoTotal, p.pesoCubadoCourier);
+    const unitCotado = p.cotado > 0 && p.totalUnid > 0 ? p.cotado / p.totalUnid : 0;
+    return `
+      <div class="product-breakdown-card">
+        <div class="pb-title">
+          <span style="color:var(--accent);">${p.nome}</span>
+          <span style="color:var(--text3);font-size:0.6rem;">${p.dimC}x${p.dimL}x${p.dimA}cm &middot; ${p.caixas}cx &middot; ${fmt(p.peso)}kg/cx</span>
+        </div>
+        <div class="pb-grid">
+          <div class="pb-item">
+            <div class="pb-label">Peso Total</div>
+            <div class="pb-val">${fmt(p.pesoTotal)} kg</div>
+          </div>
+          <div class="pb-item">
+            <div class="pb-label">Volume</div>
+            <div class="pb-val">${p.volTotalM3.toFixed(4)} CBM</div>
+          </div>
+          <div class="pb-item">
+            <div class="pb-label">Unidades</div>
+            <div class="pb-val">${p.totalUnid}</div>
+          </div>
+          <div class="pb-item">
+            <div class="pb-label">Peso Cubado (Aereo)</div>
+            <div class="pb-val">${fmt(p.pesoCubadoAereo)} kg</div>
+          </div>
+          ${p.cotado > 0 ? `
+          <div class="pb-item">
+            <div class="pb-label">Frete Cotado</div>
+            <div class="pb-val" style="color:var(--yellow);">${fmtR(p.cotado)}</div>
+          </div>
+          <div class="pb-item">
+            <div class="pb-label">R$/unidade (cotado)</div>
+            <div class="pb-val" style="color:var(--yellow);">${fmtR(unitCotado)}</div>
+          </div>
+          <div class="pb-item">
+            <div class="pb-label">R$/kg (cotado)</div>
+            <div class="pb-val" style="color:var(--yellow);">${fmtR(p.cotado / p.pesoTotal)}</div>
+          </div>
+          <div class="pb-item">
+            <div class="pb-label">US$/kg (cotado)</div>
+            <div class="pb-val" style="color:var(--yellow);">${fmtU(dolar > 0 ? (p.cotado / dolar) / p.pesoTotal : 0)}</div>
+          </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
 
   // Cubagem table
-  const rows = [
-    ['Dimensoes por caixa', `${dimC} x ${dimL} x ${dimA} cm`, fmt(volCaixaCm3) + ' cm³', ''],
-    ['Volume por caixa', '', volCaixaM3.toFixed(6) + ' m³', ''],
-    ['Volume total (' + caixas + ' cx)', '', volTotalM3.toFixed(4) + ' m³ (CBM)', 'highlight'],
-    ['Peso bruto total', caixas + ' cx x ' + fmt(pesoCaixa) + ' kg', fmt(pesoTotal) + ' kg', ''],
-    ['Total unidades', caixas + ' cx x ' + unidCaixa + ' un', totalUnidades + ' un', ''],
-    ['', '', '', ''],
-    ['Peso cubado AEREO', 'vol / 6.000', fmt(pesoCubadoAereo) + ' kg', ''],
-    ['Peso cubado COURIER', 'vol / 5.000', fmt(pesoCubadoCourier) + ' kg', ''],
-    ['Peso cubado MARITIMO', 'CBM x 1.000', fmt(pesoCubadoMaritimo) + ' kg', ''],
-    ['', '', '', ''],
-    ['Peso taxavel AEREO', aereoVence === 'CUBADO' ? 'Cubado vence' : 'Real vence', fmt(pesoTaxavelAereo) + ' kg', aereoVence === 'CUBADO' ? 'highlight-yellow' : 'highlight-green'],
-    ['Peso taxavel COURIER', courierVence === 'CUBADO' ? 'Cubado vence' : 'Real vence', fmt(pesoTaxavelCourier) + ' kg', courierVence === 'CUBADO' ? 'highlight-yellow' : 'highlight-green'],
-    ['Peso taxavel MARITIMO', maritimoVence === 'CUBADO' ? 'CBM vence' : 'Ton vence', fmt(pesoTaxavelMaritimo) + (maritimoVence === 'CUBADO' ? ' CBM' : ' ton'), maritimoVence === 'CUBADO' ? 'highlight-yellow' : 'highlight-green'],
-  ];
+  const rows = [];
+
+  prods.forEach(p => {
+    rows.push([`<strong style="color:var(--accent);">${p.nome}</strong>`, `${p.dimC} x ${p.dimL} x ${p.dimA} cm`, fmt(p.volCm3) + ' cm3', '']);
+    rows.push(['  Volume', `${p.caixas} cx`, p.volTotalM3.toFixed(6) + ' m3', '']);
+    rows.push(['  Peso bruto', `${p.caixas} cx x ${fmt(p.peso)} kg`, fmt(p.pesoTotal) + ' kg', '']);
+    rows.push(['  Unidades', `${p.caixas} cx x ${p.unidades} un`, p.totalUnid + ' un', '']);
+    rows.push(['', '', '', 'separator']);
+  });
+
+  rows.push(['<strong>CONSOLIDADO</strong>', '', '', '']);
+  rows.push(['Total caixas', products.length + ' produtos', totalCaixas + ' cx', 'highlight']);
+  rows.push(['Peso bruto total', '', fmt(totalPeso) + ' kg', 'highlight']);
+  rows.push(['Volume total (CBM)', '', totalCBM.toFixed(4) + ' m3', 'highlight']);
+  rows.push(['Total unidades', '', totalUnidades + ' un', 'highlight']);
+  rows.push(['', '', '', 'separator']);
+  rows.push(['Peso cubado AEREO', 'vol / 6.000', fmt(totalPesoCubadoAereo) + ' kg', '']);
+  rows.push(['Peso cubado COURIER', 'vol / 5.000', fmt(totalPesoCubadoCourier) + ' kg', '']);
+  rows.push(['Peso cubado MARITIMO', 'CBM x 1.000', fmt(totalPesoCubadoMaritimo) + ' kg', '']);
+  rows.push(['', '', '', 'separator']);
+  rows.push(['Peso taxavel AEREO', aereoVence === 'CUBADO' ? 'Cubado vence' : 'Real vence', fmt(pesoTaxavelAereo) + ' kg', aereoVence === 'CUBADO' ? 'highlight-yellow' : 'highlight-green']);
+  rows.push(['Peso taxavel COURIER', courierVence === 'CUBADO' ? 'Cubado vence' : 'Real vence', fmt(pesoTaxavelCourier) + ' kg', courierVence === 'CUBADO' ? 'highlight-yellow' : 'highlight-green']);
+  rows.push(['Peso taxavel MARITIMO', maritimoVence === 'CUBADO' ? 'CBM vence' : 'Ton vence', fmt(pesoTaxavelMaritimo) + (maritimoVence === 'CUBADO' ? ' CBM' : ' ton'), maritimoVence === 'CUBADO' ? 'highlight-yellow' : 'highlight-green']);
 
   document.getElementById('tb_cubagem').innerHTML = rows.map(([label, detail, val, cls]) => {
-    if (!label && !detail && !val) return '<tr><td colspan="3" style="padding:4px;"></td></tr>';
+    if (cls === 'separator') return '<tr class="separator"><td colspan="3"></td></tr>';
     return `<tr class="${cls}"><td>${label}</td><td>${detail}</td><td class="right mono">${val}</td></tr>`;
   }).join('');
 
   // Modais comparison cards
   const modais = [
     {
-      nome: 'Aereo',
-      icon: '✈',
-      badge: 'badge-blue',
-      color: 'var(--blue)',
-      peso: fmt(pesoTaxavelAereo) + ' kg',
-      tipo: aereoVence,
+      nome: 'Aereo', icon: '\u2708', badge: 'badge-blue', color: 'var(--blue)',
+      peso: fmt(pesoTaxavelAereo) + ' kg', tipo: aereoVence,
       tarifa: fmtU(tarifaAereo) + '/kg',
-      freteUSD: freteAereoUSD,
-      freteBRL: freteAereoBRL,
-      unitBRL: unitAereo,
+      freteUSD: freteAereoUSD, freteBRL: freteAereoBRL, unitBRL: unitAereo,
       prazo: '5-10 dias',
     },
     {
-      nome: 'Maritimo',
-      icon: '🚢',
-      badge: 'badge-green',
-      color: 'var(--green)',
-      peso: fmt(pesoTaxavelMaritimo) + (maritimoVence === 'CUBADO' ? ' CBM' : ' ton'),
-      tipo: maritimoVence,
+      nome: 'Maritimo', icon: '\uD83D\uDEA2', badge: 'badge-green', color: 'var(--green)',
+      peso: fmt(pesoTaxavelMaritimo) + (maritimoVence === 'CUBADO' ? ' CBM' : ' ton'), tipo: maritimoVence,
       tarifa: fmtU(tarifaMaritimo) + '/CBM',
-      freteUSD: freteMarUSD,
-      freteBRL: freteMarBRL,
-      unitBRL: unitMar,
+      freteUSD: freteMarUSD, freteBRL: freteMarBRL, unitBRL: unitMar,
       prazo: '30-45 dias',
     },
     {
-      nome: 'Courier',
-      icon: '📦',
-      badge: 'badge-orange',
-      color: 'var(--orange)',
-      peso: fmt(pesoTaxavelCourier) + ' kg',
-      tipo: courierVence,
+      nome: 'Courier', icon: '\uD83D\uDCE6', badge: 'badge-orange', color: 'var(--orange)',
+      peso: fmt(pesoTaxavelCourier) + ' kg', tipo: courierVence,
       tarifa: fmtU(tarifaCourier) + '/kg',
-      freteUSD: freteCourierUSD,
-      freteBRL: freteCourierBRL,
-      unitBRL: unitCourier,
+      freteUSD: freteCourierUSD, freteBRL: freteCourierBRL, unitBRL: unitCourier,
       prazo: '3-7 dias',
     }
   ];
 
-  // Add cotado if > 0
-  if (freteCotado > 0) {
+  if (totalCotado > 0) {
     modais.push({
-      nome: 'Cotado',
-      icon: '💰',
-      badge: 'badge-yellow',
-      color: 'var(--yellow)',
-      peso: fmt(cotadoPerKg) + ' US$/kg',
-      tipo: 'COTACAO',
+      nome: 'Cotado', icon: '\uD83D\uDCB0', badge: 'badge-yellow', color: 'var(--yellow)',
+      peso: fmt(cotadoPerKg) + ' US$/kg', tipo: 'COTACAO',
       tarifa: fmtU(cotadoPerKg) + '/kg',
-      freteUSD: cotadoUSD,
-      freteBRL: freteCotado,
-      unitBRL: cotadoUnit,
+      freteUSD: cotadoUSD, freteBRL: totalCotado, unitBRL: cotadoUnit,
       prazo: 'Conforme cotacao',
     });
   }
 
-  // Sort to find best
   const sorted = [...modais].sort((a, b) => a.freteUSD - b.freteUSD);
   const bestNome = sorted[0].nome;
 
-  // Grid columns based on count
   const gridEl = document.getElementById('modais_grid');
   gridEl.style.gridTemplateColumns = `repeat(${modais.length}, 1fr)`;
 
@@ -740,7 +934,7 @@ async function fetchDolar() {
 
 // Init
 fetchDolar();
-calc();
+renderProducts();
 </script>
 </body>
 </html>
