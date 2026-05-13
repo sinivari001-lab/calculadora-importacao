@@ -1376,6 +1376,11 @@
       </div>
     </div>
     <div id="ncmRefTable" style="padding:0 20px 14px;overflow-x:auto;">
+      <div style="margin-bottom:10px;position:relative;">
+        <input id="ncmSearchInput" type="text" placeholder="Buscar NCM, produto ou categoria..." oninput="renderNCMRef()" style="width:100%;padding:10px 14px 10px 38px;font-size:0.88rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;transition:border-color 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text3);pointer-events:none;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <span id="ncmSearchCount" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:0.75rem;color:var(--text3);"></span>
+      </div>
       <table style="width:100%;font-size:0.88rem;border-collapse:collapse;">
         <thead>
           <tr style="border-bottom:2px solid var(--border);">
@@ -4723,12 +4728,27 @@ function renderNCMRef() {
   const tbody = document.getElementById('ncmRefBody');
   if (!tbody) return;
 
+  const searchInput = document.getElementById('ncmSearchInput');
+  const searchTerm = searchInput ? searchInput.value.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') : '';
+  const searchCountEl = document.getElementById('ncmSearchCount');
+
+  // Filter items by search
+  let filtered = NCM_EXAMPLES;
+  if (searchTerm) {
+    const terms = searchTerm.split(/\s+/);
+    filtered = NCM_EXAMPLES.filter(e => {
+      const haystack = (e.cat + ' ' + e.ncm + ' ' + e.prod + ' ' + (e.req || '')).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      return terms.every(t => haystack.includes(t));
+    });
+  }
+
   const countLabel = document.getElementById('ncmCountLabel');
-  if (countLabel) countLabel.textContent = NCM_EXAMPLES.length + ' NCMs — clique para preencher';
+  if (countLabel) countLabel.textContent = (searchTerm ? filtered.length + '/' : '') + NCM_EXAMPLES.length + ' NCMs — clique para preencher';
+  if (searchCountEl) searchCountEl.textContent = searchTerm ? filtered.length + ' resultado' + (filtered.length !== 1 ? 's' : '') : '';
 
   // Group items
   const groups = {};
-  NCM_EXAMPLES.forEach(e => {
+  filtered.forEach(e => {
     const g = e.grp || 'outros';
     if (!groups[g]) groups[g] = [];
     groups[g].push(e);
@@ -4740,7 +4760,7 @@ function renderNCMRef() {
   NCM_GROUPS.forEach(g => {
     const items = groups[g.id];
     if (!items || !items.length) return;
-    const isOpen = ncmEditMode || !!ncmGroupExpanded[g.id];
+    const isOpen = searchTerm || ncmEditMode || !!ncmGroupExpanded[g.id];
     const arrow = isOpen ? '▼' : '▶';
     const reqCount = items.filter(e => e.req).length;
     const reqBadge = reqCount ? ` <span title="${reqCount} produto(s) com exigencia regulatoria" style="color:var(--yellow);font-size:0.65rem;cursor:help;">&#9888; ${reqCount}</span>` : '';
