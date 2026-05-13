@@ -1114,7 +1114,7 @@
           <strong>1. Busca rápida:</strong> Digite o nome do produto (ex: "fone bluetooth") e escolha nas sugestões.<br>
           <strong>2. Tabela NCM:</strong> Role até o final da página e use a tabela com +1800 produtos.<br>
           <strong>3. Portal Siscomex:</strong> <a href="https://portalunico.siscomex.gov.br/classif/" target="_blank" style="color:var(--accent);">portalunico.siscomex.gov.br/classif</a><br><br>
-          Quando você seleciona o NCM, o <strong>II% e IPI% preenchem automaticamente</strong>.
+          Quando você seleciona o NCM, o <strong>II%, IPI%, PIS% e COFINS% preenchem automaticamente</strong>.
           <div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;margin-top:6px;">
             <strong style="color:var(--accent);font-size:0.75rem;">NÃO SABE O NCM?</strong> <span style="font-size:0.78rem;">Pergunte ao fornecedor ou ao despachante. NCM errado = multa na aduana.</span>
           </div>
@@ -1241,7 +1241,7 @@
           <strong>Como funciona:</strong><br>
           &bull; Cada linha e um produto com NCM, quantidade, preco e volume (m3) proprios<br>
           &bull; O <strong>frete e rateado</strong> automaticamente entre os produtos pela proporcao do volume (m3) de cada um<br>
-          &bull; Cada produto tem seus proprios impostos (II% e IPI% baseados no NCM)<br>
+          &bull; Cada produto tem seus proprios impostos (II%, IPI%, PIS% e COFINS% baseados no NCM)<br>
           &bull; O resultado mostra o <strong>custo unitario de cada produto</strong> separadamente<br><br>
           <strong>Atalhos:</strong><br>
           &bull; Use os botoes de template (<strong>Tech, Casa, Moda, Auto, Esporte, Beleza</strong>) pra adicionar produtos de exemplo<br>
@@ -1384,6 +1384,8 @@
             <th style="padding:8px 10px;text-align:left;color:var(--text3);font-size:0.8rem;text-transform:uppercase;font-weight:700;">Produto Exemplo</th>
             <th style="padding:8px 10px;text-align:right;color:#ffd93d;font-size:0.8rem;text-transform:uppercase;font-weight:700;">II%</th>
             <th style="padding:8px 10px;text-align:right;color:#ff922b;font-size:0.8rem;text-transform:uppercase;font-weight:700;">IPI%</th>
+            <th style="padding:8px 10px;text-align:right;color:#4ade80;font-size:0.8rem;text-transform:uppercase;font-weight:700;">PIS%</th>
+            <th style="padding:8px 10px;text-align:right;color:#2dd4bf;font-size:0.8rem;text-transform:uppercase;font-weight:700;">COFINS%</th>
           </tr>
         </thead>
         <tbody id="ncmRefBody"></tbody>
@@ -4647,6 +4649,8 @@ function toggleAllNCMGroups() {
 
 function renderNCMRow(e, clickable) {
   const warn = e.req ? `<span title="${e.req}" style="cursor:help;margin-left:4px;font-size:0.82rem;color:var(--yellow);">&#9888;</span>` : '';
+  const pis = e.pis != null ? e.pis : 2.10;
+  const cofins = e.cofins != null ? e.cofins : 9.65;
   if (clickable) {
     return `<tr style="border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='var(--accent-dim)'" onmouseout="this.style.background=''" onclick="setNCMExample('${e.ncm}')">
       <td style="padding:8px 10px;font-weight:600;white-space:nowrap;font-size:0.88rem;">${e.cat}${warn}</td>
@@ -4654,6 +4658,8 @@ function renderNCMRow(e, clickable) {
       <td style="padding:8px 10px;color:var(--text2);font-size:0.88rem;">${e.prod}</td>
       <td style="padding:8px 10px;text-align:right;font-weight:700;color:#ffd93d;font-size:0.88rem;">${e.ii}%</td>
       <td style="padding:8px 10px;text-align:right;font-weight:600;color:#ff922b;font-size:0.88rem;">${e.ipi}%</td>
+      <td style="padding:8px 10px;text-align:right;font-weight:600;color:#4ade80;font-size:0.88rem;">${pis}%</td>
+      <td style="padding:8px 10px;text-align:right;font-weight:600;color:#2dd4bf;font-size:0.88rem;">${cofins}%</td>
     </tr>`;
   }
   const i = NCM_EXAMPLES.indexOf(e);
@@ -4662,7 +4668,9 @@ function renderNCMRow(e, clickable) {
     <td style="padding:3px 4px;"><input value="${e.ncm}" onchange="NCM_EXAMPLES[${i}].ncm=this.value;saveNCMTable()" style="width:80px;padding:2px 4px;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:var(--surface2);border:1px solid var(--border);border-radius:3px;color:var(--accent);"></td>
     <td style="padding:3px 4px;"><input value="${e.prod}" onchange="NCM_EXAMPLES[${i}].prod=this.value;saveNCMTable()" style="width:100%;padding:2px 4px;font-size:0.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:3px;color:var(--text2);"></td>
     <td style="padding:3px 4px;"><input type="number" value="${e.ii}" step="0.1" onchange="NCM_EXAMPLES[${i}].ii=parseFloat(this.value);saveNCMTable()" style="width:50px;padding:2px 4px;font-size:0.75rem;text-align:right;background:var(--surface2);border:1px solid var(--border);border-radius:3px;color:#ffd93d;"></td>
-    <td style="padding:3px 4px;display:flex;align-items:center;gap:4px;"><input type="number" value="${e.ipi}" step="0.1" onchange="NCM_EXAMPLES[${i}].ipi=parseFloat(this.value);saveNCMTable()" style="width:50px;padding:2px 4px;font-size:0.75rem;text-align:right;background:var(--surface2);border:1px solid var(--border);border-radius:3px;color:#ff922b;"><button onclick="NCM_EXAMPLES.splice(${i},1);saveNCMTable();renderNCMRef()" style="padding:1px 5px;font-size:0.7rem;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);border-radius:3px;color:#ff6b6b;cursor:pointer;" title="Remover">x</button></td>
+    <td style="padding:3px 4px;"><input type="number" value="${e.ipi}" step="0.1" onchange="NCM_EXAMPLES[${i}].ipi=parseFloat(this.value);saveNCMTable()" style="width:50px;padding:2px 4px;font-size:0.75rem;text-align:right;background:var(--surface2);border:1px solid var(--border);border-radius:3px;color:#ff922b;"></td>
+    <td style="padding:3px 4px;"><input type="number" value="${pis}" step="0.01" onchange="NCM_EXAMPLES[${i}].pis=parseFloat(this.value);saveNCMTable()" style="width:50px;padding:2px 4px;font-size:0.75rem;text-align:right;background:var(--surface2);border:1px solid var(--border);border-radius:3px;color:#4ade80;"></td>
+    <td style="padding:3px 4px;display:flex;align-items:center;gap:4px;"><input type="number" value="${cofins}" step="0.01" onchange="NCM_EXAMPLES[${i}].cofins=parseFloat(this.value);saveNCMTable()" style="width:50px;padding:2px 4px;font-size:0.75rem;text-align:right;background:var(--surface2);border:1px solid var(--border);border-radius:3px;color:#2dd4bf;"><button onclick="NCM_EXAMPLES.splice(${i},1);saveNCMTable();renderNCMRef()" style="padding:1px 5px;font-size:0.7rem;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);border-radius:3px;color:#ff6b6b;cursor:pointer;" title="Remover">x</button></td>
   </tr>`;
 }
 
@@ -4693,7 +4701,7 @@ function renderNCMRef() {
     const reqBadge = reqCount ? ` <span title="${reqCount} produto(s) com exigencia regulatoria" style="color:var(--yellow);font-size:0.65rem;cursor:help;">&#9888; ${reqCount}</span>` : '';
 
     html += `<tr onclick="${ncmEditMode ? '' : 'toggleNCMGroup(\'' + g.id + '\')'}" style="cursor:pointer;background:var(--surface2);user-select:none;">
-      <td colspan="5" style="padding:10px 10px;font-size:0.88rem;font-weight:700;color:var(--text);letter-spacing:0.3px;">
+      <td colspan="7" style="padding:10px 10px;font-size:0.88rem;font-weight:700;color:var(--text);letter-spacing:0.3px;">
         <span style="color:var(--accent);margin-right:6px;font-size:0.8rem;">${arrow}</span>
         ${g.icon} ${g.label}
         <span style="color:var(--text3);font-weight:400;margin-left:8px;font-size:0.82rem;">(${items.length})</span>${reqBadge}
@@ -4712,7 +4720,7 @@ function renderNCMRef() {
   if (quickEl) {
     const allSorted = NCM_EXAMPLES.slice().sort((a, b) => a.cat.localeCompare(b.cat, 'pt-BR'));
     quickEl.innerHTML = allSorted.slice(0, 10).map(e =>
-      `<button onclick="setNCMExample('${e.ncm}')" style="padding:2px 6px;font-size:0.65rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text2);cursor:pointer;" title="${e.prod} (II ${e.ii}% IPI ${e.ipi}%)">${e.cat}</button>`
+      `<button onclick="setNCMExample('${e.ncm}')" style="padding:2px 6px;font-size:0.65rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text2);cursor:pointer;" title="${e.prod} (II ${e.ii}% IPI ${e.ipi}% PIS ${e.pis != null ? e.pis : 2.10}% COFINS ${e.cofins != null ? e.cofins : 9.65}%)">${e.cat}</button>`
     ).join('');
   }
 }
@@ -4724,7 +4732,7 @@ function toggleNCMEdit() {
 }
 
 function addNCMRow() {
-  NCM_EXAMPLES.push({ cat: 'Novo', ncm: '00000000', prod: 'Descrição do produto', ii: 18, ipi: 0, grp: 'outros' });
+  NCM_EXAMPLES.push({ cat: 'Novo', ncm: '00000000', prod: 'Descrição do produto', ii: 18, ipi: 0, pis: 2.10, cofins: 9.65, grp: 'outros' });
   ncmGroupExpanded['outros'] = true;
   saveNCMTable();
   ncmEditMode = true;
@@ -4775,7 +4783,7 @@ function onNCMInput(prefix, raw) {
           <span style="font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:700;">${e.ncm.replace(/(\d{4})(\d{2})(\d{2})/, '$1.$2.$3')}</span>
           <span style="color:var(--text2);margin-left:6px;">${e.cat}</span>
           <span style="color:var(--text3);margin-left:4px;font-size:0.65rem;">— ${e.prod}</span>
-          <span style="float:right;color:#ffd93d;font-weight:600;">II ${e.ii}% IPI ${e.ipi}%</span>
+          <span style="float:right;font-weight:600;"><span style="color:#ffd93d;">II ${e.ii}%</span> <span style="color:#ff922b;">IPI ${e.ipi}%</span> <span style="color:#4ade80;">PIS ${e.pis != null ? e.pis : 2.10}%</span> <span style="color:#2dd4bf;">COF ${e.cofins != null ? e.cofins : 9.65}%</span></span>
         </div>`
       ).join('');
     } else if (sugEl) { sugEl.style.display = 'none'; }
@@ -4789,9 +4797,13 @@ function onNCMInput(prefix, raw) {
       if (descEl) descEl.textContent = exact.prod;
       const statusEl = document.getElementById(prefix + '_ncm_status');
       if (statusEl) { statusEl.textContent = '(tabela local)'; statusEl.style.color = 'var(--green)'; }
-      // Fill exact II/IPI from local table
+      // Fill exact II/IPI/PIS/COFINS from local table
       document.getElementById(prefix + '_ii_aliq').value = exact.ii;
-      if (prefix === 's') document.getElementById('s_ipi_aliq').value = exact.ipi;
+      if (prefix === 's') {
+        document.getElementById('s_ipi_aliq').value = exact.ipi;
+        document.getElementById('s_pis_aliq').value = exact.pis != null ? exact.pis : 2.10;
+        document.getElementById('s_cofins_aliq').value = exact.cofins != null ? exact.cofins : 9.65;
+      }
       if (prefix === 's') calcSingle(); else calcMulti();
     }
   }
