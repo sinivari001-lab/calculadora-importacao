@@ -2429,6 +2429,7 @@ const NCM_GROUPS = [
   { id: 'construcao', label: 'Ferramentas & Construção', icon: '🔧' },
   { id: 'escritorio', label: 'Escritório & Papelaria',   icon: '🖊️' },
   { id: 'pet',       label: 'Pet & Aquarismo',           icon: '🐾' },
+  { id: 'sazonal',   label: 'Sazonal & Festas',           icon: '🎄' },
   { id: 'outros',    label: 'Outros',                   icon: '📦' },
 ];
 
@@ -2727,14 +2728,14 @@ const NCM_DEFAULTS = [
   { cat: 'Pet Racao',    ncm: '23091000', prod: 'Racao para caes e gatos', ii: 8,  ipi: 0,  grp: 'pet', req: 'MAPA registro obrigatorio' },
   { cat: 'Mat. Escolar', ncm: '39261000', prod: 'Material escolar plastico (regua, estojo)', ii: 14, ipi: 9.75, grp: 'escritorio' },
   { cat: 'Brindes',      ncm: '39269090', prod: 'Brindes promocionais plastico', ii: 14, ipi: 10, grp: 'outros' },
-  { cat: 'Velas',        ncm: '34060000', prod: 'Velas decorativas e aromaticas', ii: 14, ipi: 5,  grp: 'outros' },
+  { cat: 'Velas',        ncm: '34060000', prod: 'Velas decorativas e aromaticas', ii: 14, ipi: 0,  grp: 'outros' },
   { cat: 'Adesivos',     ncm: '49089000', prod: 'Adesivos, stickers e decalques', ii: 12, ipi: 5,  grp: 'outros' },
   { cat: 'Molduras',     ncm: '44140000', prod: 'Molduras e porta-retratos madeira', ii: 8,  ipi: 5,  grp: 'outros' },
-  { cat: 'Flores Artif', ncm: '67021900', prod: 'Flores e plantas artificiais', ii: 14, ipi: 10, grp: 'outros' },
+  { cat: 'Flores Artif', ncm: '67029000', prod: 'Flores e plantas artificiais', ii: 14, ipi: 9.75, grp: 'outros' },
   { cat: 'Isqueiros',    ncm: '96131000', prod: 'Isqueiros de bolso a gas', ii: 18, ipi: 30, grp: 'outros' },
   { cat: 'Termometro',   ncm: '90251990', prod: 'Termometros digitais', ii: 14, ipi: 10, grp: 'outros' },
   { cat: 'Cadeado',      ncm: '83011000', prod: 'Cadeados e fechaduras', ii: 14, ipi: 10, grp: 'outros' },
-  { cat: 'Caneta',       ncm: '96081000', prod: 'Canetas esferograficas e marcadores', ii: 18, ipi: 10, grp: 'escritorio' },
+  { cat: 'Caneta',       ncm: '96081000', prod: 'Canetas esferograficas e marcadores', ii: 14, ipi: 20, grp: 'escritorio' },
   { cat: 'Cortina Box',  ncm: '39221000', prod: 'Cortinas de box e banheiro', ii: 14, ipi: 10, grp: 'outros' },
   { cat: 'Etiquetadora', ncm: '84729099', prod: 'Etiquetadoras e rotuladoras', ii: 14, ipi: 0,  grp: 'escritorio' },
   { cat: 'Fita Adesiva', ncm: '39191000', prod: 'Fitas adesivas e silver tape', ii: 14, ipi: 10, grp: 'outros' },
@@ -4589,6 +4590,36 @@ const NCM_DEFAULTS = [
   { cat: 'Cafe Especial',  ncm: '09012100', prod: 'Cafe especial / specialty coffee / torrado grao / 85+ pts', ii: 10, ipi: 5, grp: 'alimentos' },
   { cat: 'Chocolate Belga', ncm: '18063200', prod: 'Chocolate belga / suiço / premium / tabletes / Callebaut', ii: 14, ipi: 5, grp: 'alimentos' },
   { cat: 'Massa Italiana', ncm: '19021100', prod: 'Massa italiana artesanal / De Cecco / Barilla / bronze die', ii: 16, ipi: 0, grp: 'alimentos' },
+
+  // ===== SAZONAL & FESTAS =====
+  // -- Natal --
+  { cat: 'Artigos Natal',  ncm: '95051000', prod: 'Artigos para festas de natal / arvore / guirlanda / presepio / bolas', ii: 20, ipi: 13, grp: 'sazonal' },
+  { cat: 'Pisca-pisca LED', ncm: '94053100', prod: 'Pisca-pisca LED / cordao luminoso / fairy lights / natal', ii: 18, ipi: 9.75, grp: 'sazonal', req: 'INMETRO obrigatorio' },
+  { cat: 'Pisca Nao-LED', ncm: '94053900', prod: 'Pisca-pisca incandescente / cordao de luzes nao-LED', ii: 18, ipi: 9.75, grp: 'sazonal', req: 'INMETRO obrigatorio' },
+  { cat: 'Cortina LED',    ncm: '94054200', prod: 'Cortina LED / mangueira luminosa / cascata / rede natal', ii: 18, ipi: 9.75, grp: 'sazonal', req: 'INMETRO obrigatorio' },
+  { cat: 'Deco Plastico',  ncm: '39264000', prod: 'Decoracao plastica / enfeites natal plastico / estatuetas', ii: 14, ipi: 13, grp: 'sazonal' },
+  { cat: 'Deco Metal',     ncm: '83062900', prod: 'Decoracao metal / sino / estrela / anjo / porta-velas metal', ii: 14, ipi: 9.75, grp: 'sazonal' },
+  { cat: 'Fita Decorativa', ncm: '58063200', prod: 'Fitas decorativas / lacos / ribbon / embalagem presente', ii: 18, ipi: 0, grp: 'sazonal' },
+  { cat: 'Caixa Presente', ncm: '48195000', prod: 'Caixas presente / embalagem cartonada / gift box / sacolas', ii: 12, ipi: 9.75, grp: 'sazonal' },
+
+  // -- Carnaval --
+  { cat: 'Art. Carnaval',  ncm: '95059000', prod: 'Fantasias / mascaras / confete / serpentina / aderecos carnaval', ii: 20, ipi: 13, grp: 'sazonal' },
+
+  // -- Pascoa --
+  { cat: 'Ovo Chocolate',  ncm: '18063110', prod: 'Ovos de chocolate recheados / ovo pascoa / bombom', ii: 14, ipi: 3.25, grp: 'sazonal', req: 'ANVISA + rotulagem obrigatoria' },
+  { cat: 'Choco Tabletes', ncm: '18063210', prod: 'Chocolate tabletes / barras / trufas / pascoa premium', ii: 14, ipi: 3.25, grp: 'sazonal', req: 'ANVISA + rotulagem obrigatoria' },
+  { cat: 'Choco Branco',   ncm: '17049010', prod: 'Chocolate branco / confeitaria / cobertura / pascoa', ii: 14, ipi: 3.25, grp: 'sazonal', req: 'ANVISA + rotulagem obrigatoria' },
+
+  // -- Brinquedos Sazonais --
+  { cat: 'Pelucias',       ncm: '95030031', prod: 'Pelucias / urso teddy / bicho pelúcia / presente natal', ii: 20, ipi: 6.5, grp: 'sazonal', req: 'INMETRO obrigatorio' },
+  { cat: 'Brinq. Diversos', ncm: '95030080', prod: 'Brinquedos diversos / kits presente / brinquedo educativo', ii: 20, ipi: 6.5, grp: 'sazonal', req: 'INMETRO obrigatorio' },
+
+  // -- Volta as Aulas --
+  { cat: 'Mochila Escolar', ncm: '42029200', prod: 'Mochilas escolares / mochila infantil / volta as aulas', ii: 18, ipi: 6.5, grp: 'sazonal' },
+  { cat: 'Cadernos',       ncm: '48202000', prod: 'Cadernos / ficharios / blocos / agenda escolar', ii: 12, ipi: 0, grp: 'sazonal' },
+  { cat: 'Caneta Escolar', ncm: '96081000', prod: 'Canetas esferograficas / kit escolar / marcadores', ii: 14, ipi: 20, grp: 'sazonal' },
+  { cat: 'Lapis',          ncm: '96091000', prod: 'Lapis grafite / lapis de cor / volta as aulas', ii: 14, ipi: 0, grp: 'sazonal' },
+  { cat: 'Borracha',       ncm: '40169200', prod: 'Borrachas escolares / apagador / borracha branca', ii: 14, ipi: 0, grp: 'sazonal' },
 ];
 
 const NCM_STORAGE_KEY = 'calcimport-ncm-table';
