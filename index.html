@@ -975,7 +975,7 @@
     <div class="header-brand">
       <div class="header-logo">IC</div>
       <div>
-        <h1>Import<span class="brand-accent">Calc</span> <span class="header-version">v0.1.0-alpha.9</span></h1>
+        <h1>Import<span class="brand-accent">Calc</span> <span class="header-version">v0.1.0-alpha.10</span></h1>
         <p>Calculadora de viabilidade de importação com impostos reais</p>
       </div>
     </div>
@@ -1082,7 +1082,7 @@
           <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Escolha o tipo de importação</h3>
         </div>
         <div style="margin-left:38px;font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          <strong style="color:var(--accent);">Remessa Conforme</strong> — Até US$50: II 20%. Acima de US$50: II 60% com desconto de US$20. ICMS 17% (ou 20% em 10 estados desde abr/2025). Sem PIS/COFINS/IPI.<br>
+          <strong style="color:var(--accent);">Remessa Conforme</strong> — Até US$50: II 0% (isento, MP 1.357/2026). Acima de US$50: II 30%. ICMS 17% (ou 20% em 10 estados desde abr/2025). Sem PIS/COFINS/IPI.<br>
           <strong style="color:var(--accent);">Importação Formal (DI/Duimp)</strong> — Processo completo com II, IPI, PIS, COFINS e ICMS variáveis por NCM e estado. Para importações com DI/Duimp via despachante.
         </div>
       </div>
@@ -2083,7 +2083,7 @@
       <div style="display:flex;align-items:center;gap:10px;">
         <span style="font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Mural de Atualizacoes</span>
       </div>
-      <span id="app_version" style="font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:6px;background:rgba(139,92,246,0.12);color:var(--accent2);letter-spacing:0.5px;">v0.1.0-alpha.9</span>
+      <span id="app_version" style="font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:6px;background:rgba(139,92,246,0.12);color:var(--accent2);letter-spacing:0.5px;">v0.1.0-alpha.10</span>
     </div>
     <div id="changelog" style="max-height:300px;overflow-y:auto;font-size:0.75rem;line-height:1.8;">
       <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,42,62,0.3);">
@@ -2113,6 +2113,11 @@
       </div>
       <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,42,62,0.3);">
         <span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.65rem;min-width:72px;">13/05/26</span>
+        <span style="color:var(--yellow);font-weight:700;font-size:0.6rem;min-width:40px;">FIX</span>
+        <span style="color:var(--text2);">MP 1.357/2026: Remessa Conforme atualizado &mdash; ate US$50: II 0% (isento) | acima: II 30% (era 60%). ICMS corrigido em 4 estados.</span>
+      </div>
+      <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,42,62,0.3);">
+        <span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.65rem;min-width:72px;">13/05/26</span>
         <span style="color:var(--green);font-weight:700;font-size:0.6rem;min-width:40px;">NOVO</span>
         <span style="color:var(--text2);">Campo "Frete Cotado" &mdash; insira o valor que seu agente de carga cotou e compare com as estimativas</span>
       </div>
@@ -2139,9 +2144,9 @@
       <div class="footer-logo">IC</div>
       <span>ImportCalc</span>
     </div>
-    <span style="font-size:0.65rem;color:var(--text3);">v0.1.0-alpha.9</span>
+    <span style="font-size:0.65rem;color:var(--text3);">v0.1.0-alpha.10</span>
     <br>
-    Alíquotas atualizadas TEC/TIPI 2024-2025 &middot; Cálculo ICMS por dentro &middot; AFRMM automático
+    Alíquotas atualizadas TEC/TIPI 2026 + MP 1.357/2026 &middot; Cálculo ICMS por dentro &middot; AFRMM automático
     <br>
     Ferramenta gratuita para uso pessoal e comercial &middot; Resultados são estimativas &mdash; consulte seu despachante para valores definitivos
     <div class="footer-links">
@@ -2205,9 +2210,9 @@ function onTipoImportacaoChange(prefix) {
   if (isRemessa) {
     // Remessa Conforme: II depende do valor, PIS/COFINS/IPI = 0, ICMS por estado
     const icmsRC = getRemessaICMS(prefix);
-    // II sera calculado dinamicamente em calcSingle/calcMulti (20% ou 60%)
-    // Aqui setamos 60% como visual padrao (o calculo ajusta)
-    document.getElementById(prefix + '_ii_aliq').value = '60';
+    // II sera calculado dinamicamente em calcSingle/calcMulti (0% ou 30%)
+    // Aqui setamos 30% como visual padrao (o calculo ajusta)
+    document.getElementById(prefix + '_ii_aliq').value = '30';
     document.getElementById(prefix + '_ii_aliq').disabled = true;
     document.getElementById(prefix + '_ipi_aliq').value = '0';
     document.getElementById(prefix + '_ipi_aliq').disabled = true;
@@ -2228,7 +2233,7 @@ function onTipoImportacaoChange(prefix) {
       });
       // Info visual
       const infoEl = document.getElementById('s_remessa_info');
-      if (infoEl) infoEl.textContent = 'II 20% (até US$50) ou 60% (acima, com desc. US$20) · ICMS ' + icmsRC + '%';
+      if (infoEl) infoEl.textContent = 'II 0% (até US$50) ou 30% (acima US$50) · ICMS ' + icmsRC + '%';
     } else {
       ['m_icms_cred', 'm_ipi_cred', 'm_pis_cred', 'm_cofins_cred'].forEach(id => {
         const el = document.getElementById(id);
@@ -2320,7 +2325,7 @@ function onModalidadeChange(prefix) {
 // ============================================================
 const ICMS_BY_STATE = {
   'AC': { name: 'Acre', rate: 19 },
-  'AL': { name: 'Alagoas', rate: 19 },
+  'AL': { name: 'Alagoas', rate: 20.5 },
   'AM': { name: 'Amazonas', rate: 20 },
   'AP': { name: 'Amapá', rate: 18 },
   'BA': { name: 'Bahia', rate: 20.5 },
@@ -2328,17 +2333,17 @@ const ICMS_BY_STATE = {
   'DF': { name: 'Distrito Federal', rate: 20 },
   'ES': { name: 'Espírito Santo', rate: 17 },
   'GO': { name: 'Goiás', rate: 19 },
-  'MA': { name: 'Maranhão', rate: 22 },
+  'MA': { name: 'Maranhão', rate: 23 },
   'MG': { name: 'Minas Gerais', rate: 18 },
   'MS': { name: 'Mato Grosso do Sul', rate: 17 },
   'MT': { name: 'Mato Grosso', rate: 17 },
   'PA': { name: 'Pará', rate: 19 },
   'PB': { name: 'Paraíba', rate: 20 },
   'PE': { name: 'Pernambuco', rate: 20.5 },
-  'PI': { name: 'Piauí', rate: 21 },
+  'PI': { name: 'Piauí', rate: 22.5 },
   'PR': { name: 'Paraná', rate: 19.5 },
   'RJ': { name: 'Rio de Janeiro', rate: 22 },
-  'RN': { name: 'Rio Grande do Norte', rate: 18 },
+  'RN': { name: 'Rio Grande do Norte', rate: 20 },
   'RO': { name: 'Rondônia', rate: 19.5 },
   'RR': { name: 'Roraima', rate: 20 },
   'RS': { name: 'Rio Grande do Sul', rate: 17 },
@@ -2361,7 +2366,7 @@ function onStateChange(prefix) {
       // Atualizar info visual
       if (prefix === 's') {
         const infoEl = document.getElementById('s_remessa_info');
-        if (infoEl) infoEl.textContent = 'II 20% (até US$50) ou 60% (acima, com desc. US$20) · ICMS ' + (ICMS_REMESSA_CONFORME[state] || 17) + '%';
+        if (infoEl) infoEl.textContent = 'II 0% (até US$50) ou 30% (acima US$50) · ICMS ' + (ICMS_REMESSA_CONFORME[state] || 17) + '%';
       }
     } else {
       document.getElementById(prefix + '_icms_aliq').value = ICMS_BY_STATE[state].rate;
@@ -5010,19 +5015,19 @@ function calcSingle() {
   const cofins_aliq = v('s_cofins_aliq') / 100;
   const icms_aliq = v('s_icms_aliq') / 100;
 
-  // Remessa Conforme: II depende do valor em USD
-  // Ate US$50: II 20% | Acima US$50: II 60% com desconto de US$20
+  // Remessa Conforme: II depende do valor em USD (MP 1.357/2026, vigente 13/05/2026)
+  // Ate US$50: II 0% (isento) | Acima US$50: II 30%
   let ii_val;
   let ii_label;
   if (isRemessa) {
     if (vmld_usd <= 50) {
-      ii_val = vmld_brl * 0.20;
-      ii_label = 'II (20% — até US$50)';
-      document.getElementById('s_ii_aliq').value = '20';
+      ii_val = 0;
+      ii_label = 'II (0% — isento até US$50)';
+      document.getElementById('s_ii_aliq').value = '0';
     } else {
-      ii_val = Math.max(0, vmld_brl * 0.60 - 20 * dolar);
-      ii_label = 'II (60% − desc. US$20)';
-      document.getElementById('s_ii_aliq').value = '60';
+      ii_val = vmld_brl * 0.30;
+      ii_label = 'II (30% — acima US$50)';
+      document.getElementById('s_ii_aliq').value = '30';
     }
   } else {
     const ii_aliq = v('s_ii_aliq') / 100;
@@ -5274,14 +5279,14 @@ function calcMulti() {
     const vmld_brl = vmle_brl + frete_rat_brl + seguro_rat_brl;
     const vmld_usd = vmle_usd + frete_rat_usd + seguro_rat_usd;
 
-    // Taxes — Remessa Conforme aplica faixas por produto
+    // Taxes — Remessa Conforme aplica faixas por produto (MP 1.357/2026)
     const rateio_taxas = (siscomex + afrmm + outras) * ratio;
     let ii_val;
     if (isRemessa) {
       if (vmld_usd <= 50) {
-        ii_val = vmld_brl * 0.20;
+        ii_val = 0; // Isento ate US$50
       } else {
-        ii_val = Math.max(0, vmld_brl * 0.60 - 20 * dolar);
+        ii_val = vmld_brl * 0.30; // 30% acima US$50
       }
     } else {
       const p_ii = (p.ii !== null && p.ii !== undefined ? p.ii / 100 : ii_aliq);
