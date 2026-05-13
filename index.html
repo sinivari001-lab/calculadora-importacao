@@ -975,7 +975,7 @@
     <div class="header-brand">
       <div class="header-logo">IC</div>
       <div>
-        <h1>Import<span class="brand-accent">Calc</span> <span class="header-version">v2.0</span></h1>
+        <h1>Import<span class="brand-accent">Calc</span> <span class="header-version">v0.1.0-alpha.8</span></h1>
         <p>Calculadora de viabilidade de importação com impostos reais</p>
       </div>
     </div>
@@ -1968,11 +1968,60 @@
     </div>
   </div>
 
+  <!-- Mural de Atualizacoes -->
+  <div style="max-width:700px;margin:30px auto 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;animation:fadeInUp 0.5s ease-out both;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Mural de Atualizacoes</span>
+      </div>
+      <span id="app_version" style="font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:6px;background:rgba(139,92,246,0.12);color:var(--accent2);letter-spacing:0.5px;">v0.1.0-alpha.8</span>
+    </div>
+    <div id="changelog" style="max-height:300px;overflow-y:auto;font-size:0.75rem;line-height:1.8;">
+      <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,42,62,0.3);">
+        <span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.65rem;min-width:72px;">13/05/26</span>
+        <span style="color:var(--accent);font-weight:600;min-width:16px;">8</span>
+        <span style="color:var(--text2);">Botao "Limpar Campos" nas abas NCM Unico e Frete</span>
+      </div>
+      <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,42,62,0.3);">
+        <span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.65rem;min-width:72px;">13/05/26</span>
+        <span style="color:var(--accent);font-weight:600;min-width:16px;">7</span>
+        <span style="color:var(--text2);">Credito "Desenvolvido por Caio Sales" no footer</span>
+      </div>
+      <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,42,62,0.3);">
+        <span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.65rem;min-width:72px;">13/05/26</span>
+        <span style="color:var(--accent);font-weight:600;min-width:16px;">6</span>
+        <span style="color:var(--text2);">Layout responsivo para celular (frete + modais + tabelas)</span>
+      </div>
+      <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,42,62,0.3);">
+        <span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.65rem;min-width:72px;">13/05/26</span>
+        <span style="color:var(--accent);font-weight:600;min-width:16px;">5</span>
+        <span style="color:var(--text2);">Frete multi-produto + tarifa aereo US$25/kg (Simulacao 2)</span>
+      </div>
+      <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,42,62,0.3);">
+        <span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.65rem;min-width:72px;">10/05/26</span>
+        <span style="color:var(--accent);font-weight:600;min-width:16px;">4</span>
+        <span style="color:var(--text2);">Aba Calculadora de Frete com comparativo Aereo/Maritimo/Courier</span>
+      </div>
+      <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,42,62,0.3);">
+        <span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.65rem;min-width:72px;">10/05/26</span>
+        <span style="color:var(--accent);font-weight:600;min-width:16px;">3</span>
+        <span style="color:var(--text2);">Fix Remessa Conforme faixas + adic. COFINS na aba multi NCM</span>
+      </div>
+      <div style="display:flex;gap:10px;padding:6px 0;">
+        <span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.65rem;min-width:72px;">10/05/26</span>
+        <span style="color:var(--accent);font-weight:600;min-width:16px;">1</span>
+        <span style="color:var(--text2);">Lancamento ImportCalc v2.0 - NCM unico, multiplos NCMs, SISCOMEX</span>
+      </div>
+    </div>
+  </div>
+
   <div class="footer">
     <div class="footer-brand">
       <div class="footer-logo">IC</div>
       <span>ImportCalc</span>
     </div>
+    <span style="font-size:0.65rem;color:var(--text3);">v0.1.0-alpha.8</span>
+    <br>
     Alíquotas atualizadas TEC/TIPI 2024-2025 &middot; Cálculo ICMS por dentro &middot; AFRMM automático
     <br>
     Ferramenta gratuita para uso pessoal e comercial &middot; Resultados são estimativas &mdash; consulte seu despachante para valores definitivos
