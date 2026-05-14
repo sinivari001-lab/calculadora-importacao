@@ -1649,8 +1649,8 @@
         <div class="field">
           <label>Tipo de Importação</label>
           <select id="m_tipo_imp" onchange="onTipoImportacaoChange('m');calcMulti()">
-            <option value="remessa">Remessa Conforme</option>
             <option value="formal">Importação Formal (DI/Duimp)</option>
+            <option value="remessa">Remessa Conforme</option>
           </select>
         </div>
         <div class="field">
@@ -5103,8 +5103,8 @@ function calcSingle() {
 // ABA 2: MÚLTIPLOS NCMs
 // ============================================================
 let products = [
-  { ncm: '0000.00.00', desc: '40A', qtd: 50, price: 0.8, m3: 2, ii: null, ipi: null },
-  { ncm: '0000.00.01', desc: '60A', qtd: 200, price: 2.4, m3: 2, ii: null, ipi: null },
+  { ncm: '39269090', desc: 'Capinhas', qtd: 300, price: 0.67, m3: 1, ii: 18, ipi: 0 },
+  { ncm: '85183000', desc: 'Fones', qtd: 100, price: 2.50, m3: 1, ii: 18, ipi: 9.75 },
 ];
 
 function renderProducts() {
