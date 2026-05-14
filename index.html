@@ -5120,7 +5120,7 @@ function renderProducts() {
             onfocus="onMultiNCMSearch(${i},this)"
             onblur="setTimeout(()=>{const el=document.getElementById('m_ncm_sug_${i}');if(el)el.style.display='none'},200)"
             style="font-family:'JetBrains Mono',monospace;width:110px;">
-          <div id="m_ncm_sug_${i}" style="display:none;position:absolute;top:100%;left:0;z-index:50;background:var(--surface);border:1px solid var(--border);border-radius:8px;max-height:200px;overflow-y:auto;width:280px;box-shadow:0 8px 24px rgba(0,0,0,0.15);margin-top:2px;"></div>
+          <div id="m_ncm_sug_${i}" style="display:none;position:absolute;top:100%;left:0;z-index:50;background:var(--surface);border:1px solid var(--border);border-radius:8px;max-height:250px;overflow-y:auto;width:340px;box-shadow:0 8px 24px rgba(0,0,0,0.3);margin-top:2px;"></div>
         </div>
       </td>
       <td><input class="desc-input" value="${p.desc}" onchange="products[${i}].desc=this.value" style="min-width:140px;"></td>
@@ -5146,18 +5146,21 @@ function renderProducts() {
 }
 
 function onMultiNCMSearch(idx, inputEl) {
-  const query = inputEl.value.toLowerCase().trim();
+  const raw = inputEl.value.trim();
+  const query = raw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const sugEl = document.getElementById('m_ncm_sug_' + idx);
   if (!sugEl || query.length < 2) { if (sugEl) sugEl.style.display = 'none'; return; }
-  const matches = NCM_EXAMPLES.filter(e =>
-    e.ncm.includes(query) || e.cat.toLowerCase().includes(query) || e.prod.toLowerCase().includes(query)
-  ).slice(0, 12);
+  const terms = query.split(/\s+/);
+  const matches = NCM_EXAMPLES.filter(e => {
+    const haystack = (e.cat + ' ' + e.ncm + ' ' + e.prod + ' ' + (e.req || '')).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return terms.every(t => haystack.includes(t));
+  }).slice(0, 15);
   if (matches.length === 0) { sugEl.style.display = 'none'; return; }
   sugEl.innerHTML = matches.map(e => `
     <div onclick="selectMultiNCM(${idx},'${e.ncm}')" style="padding:6px 10px;cursor:pointer;border-bottom:1px solid var(--border);font-size:0.72rem;transition:background 0.15s;" onmouseover="this.style.background='var(--accent-dim)'" onmouseout="this.style.background='transparent'">
       <span style="font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:600;">${e.ncm}</span>
       <span style="color:var(--text2);margin-left:6px;">${e.cat}</span>
-      <span style="color:var(--text3);font-size:0.65rem;display:block;margin-top:1px;">${e.prod.substring(0, 50)}</span>
+      <span style="color:var(--text3);font-size:0.65rem;display:block;margin-top:1px;">${e.prod.substring(0, 70)}</span>
       <span style="color:#ffd93d;font-size:0.62rem;">II ${e.ii}%</span> <span style="color:#ff922b;font-size:0.62rem;">IPI ${e.ipi}%</span>
     </div>
   `).join('');
@@ -5180,7 +5183,17 @@ function selectMultiNCM(idx, ncm) {
 function onMultiNCMChange(idx, ncmRaw) {
   const ncm = ncmRaw.replace(/[^0-9]/g, '');
   products[idx].ncm = ncmRaw;
-  if (ncm.length >= 2) {
+  // Priority: exact NCM_EXAMPLES > TIPI_DB 8-digit > chapter fallback
+  const exact = NCM_EXAMPLES.find(e => e.ncm === ncm);
+  if (exact) {
+    products[idx].ii = exact.ii;
+    products[idx].ipi = exact.ipi;
+    products[idx].desc = exact.cat;
+  } else if (ncm.length === 8 && typeof TIPI_DB !== 'undefined' && TIPI_DB[ncm]) {
+    const rates = TIPI_DB[ncm];
+    products[idx].ii = rates[0];
+    products[idx].ipi = rates[1];
+  } else if (ncm.length >= 2) {
     const cap = ncm.substring(0, 2);
     if (TEC_BY_CHAPTER[cap] !== undefined) products[idx].ii = TEC_BY_CHAPTER[cap];
     if (TIPI_BY_CHAPTER[cap] !== undefined) products[idx].ipi = TIPI_BY_CHAPTER[cap];
