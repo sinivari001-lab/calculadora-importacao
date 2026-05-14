@@ -1082,7 +1082,7 @@
           <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Escolha o tipo de importação</h3>
         </div>
         <div style="margin-left:38px;font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          <strong style="color:var(--accent);">Remessa Conforme</strong> — Até US$50: II 0% (isento, MP 1.357/2026). Acima de US$50: II 30%. ICMS 17% (ou 20% em 10 estados desde abr/2025). Sem PIS/COFINS/IPI.<br>
+          <strong style="color:var(--accent);">Remessa Conforme</strong> — Até US$50: II 0% (isento, MP 1.357/2026). Acima de US$50: II 60% com desconto de US$20. ICMS 17% (ou 20% em 10 estados desde abr/2025). Sem PIS/COFINS/IPI.<br>
           <strong style="color:var(--accent);">Importação Formal (DI/Duimp)</strong> — Processo completo com II, IPI, PIS, COFINS e ICMS variáveis por NCM e estado. Para importações com DI/Duimp via despachante.
         </div>
       </div>
@@ -2114,7 +2114,7 @@
       <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,42,62,0.3);">
         <span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.65rem;min-width:72px;">13/05/26</span>
         <span style="color:var(--yellow);font-weight:700;font-size:0.6rem;min-width:40px;">FIX</span>
-        <span style="color:var(--text2);">MP 1.357/2026: Remessa Conforme atualizado &mdash; ate US$50: II 0% (isento) | acima: II 30% (era 60%). ICMS corrigido em 4 estados.</span>
+        <span style="color:var(--text2);">MP 1.357/2026: Remessa Conforme atualizado &mdash; ate US$50: II 0% (isento). Acima: II 60% com desc. US$20 (inalterado). ICMS corrigido em 4 estados.</span>
       </div>
       <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,42,62,0.3);">
         <span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.65rem;min-width:72px;">13/05/26</span>
@@ -2210,9 +2210,9 @@ function onTipoImportacaoChange(prefix) {
   if (isRemessa) {
     // Remessa Conforme: II depende do valor, PIS/COFINS/IPI = 0, ICMS por estado
     const icmsRC = getRemessaICMS(prefix);
-    // II sera calculado dinamicamente em calcSingle/calcMulti (0% ou 30%)
-    // Aqui setamos 30% como visual padrao (o calculo ajusta)
-    document.getElementById(prefix + '_ii_aliq').value = '30';
+    // II sera calculado dinamicamente em calcSingle/calcMulti (0% ou 60%)
+    // Aqui setamos 60% como visual padrao (o calculo ajusta)
+    document.getElementById(prefix + '_ii_aliq').value = '60';
     document.getElementById(prefix + '_ii_aliq').disabled = true;
     document.getElementById(prefix + '_ipi_aliq').value = '0';
     document.getElementById(prefix + '_ipi_aliq').disabled = true;
@@ -2233,7 +2233,7 @@ function onTipoImportacaoChange(prefix) {
       });
       // Info visual
       const infoEl = document.getElementById('s_remessa_info');
-      if (infoEl) infoEl.textContent = 'II 0% (até US$50) ou 30% (acima US$50) · ICMS ' + icmsRC + '%';
+      if (infoEl) infoEl.textContent = 'II 0% (até US$50) ou 60% (acima, com desc. US$20) · ICMS ' + icmsRC + '%';
     } else {
       ['m_icms_cred', 'm_ipi_cred', 'm_pis_cred', 'm_cofins_cred'].forEach(id => {
         const el = document.getElementById(id);
@@ -2366,7 +2366,7 @@ function onStateChange(prefix) {
       // Atualizar info visual
       if (prefix === 's') {
         const infoEl = document.getElementById('s_remessa_info');
-        if (infoEl) infoEl.textContent = 'II 0% (até US$50) ou 30% (acima US$50) · ICMS ' + (ICMS_REMESSA_CONFORME[state] || 17) + '%';
+        if (infoEl) infoEl.textContent = 'II 0% (até US$50) ou 60% (acima, com desc. US$20) · ICMS ' + (ICMS_REMESSA_CONFORME[state] || 17) + '%';
       }
     } else {
       document.getElementById(prefix + '_icms_aliq').value = ICMS_BY_STATE[state].rate;
@@ -5016,7 +5016,7 @@ function calcSingle() {
   const icms_aliq = v('s_icms_aliq') / 100;
 
   // Remessa Conforme: II depende do valor em USD (MP 1.357/2026, vigente 13/05/2026)
-  // Ate US$50: II 0% (isento) | Acima US$50: II 30%
+  // Ate US$50: II 0% (isento) | Acima US$50: II 60% com desconto de US$20
   let ii_val;
   let ii_label;
   if (isRemessa) {
@@ -5025,9 +5025,9 @@ function calcSingle() {
       ii_label = 'II (0% — isento até US$50)';
       document.getElementById('s_ii_aliq').value = '0';
     } else {
-      ii_val = vmld_brl * 0.30;
-      ii_label = 'II (30% — acima US$50)';
-      document.getElementById('s_ii_aliq').value = '30';
+      ii_val = Math.max(0, vmld_brl * 0.60 - 20 * dolar);
+      ii_label = 'II (60% − desc. US$20)';
+      document.getElementById('s_ii_aliq').value = '60';
     }
   } else {
     const ii_aliq = v('s_ii_aliq') / 100;
@@ -5299,7 +5299,7 @@ function calcMulti() {
       if (vmld_usd <= 50) {
         ii_val = 0; // Isento ate US$50
       } else {
-        ii_val = vmld_brl * 0.30; // 30% acima US$50
+        ii_val = Math.max(0, vmld_brl * 0.60 - 20 * dolar); // 60% com desc US$20
       }
     } else {
       const p_ii = (p.ii !== null && p.ii !== undefined ? p.ii / 100 : ii_aliq);
