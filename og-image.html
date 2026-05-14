@@ -36,18 +36,10 @@
     padding: 60px;
   }
   .logo {
-    width: 90px; height: 90px;
-    background: linear-gradient(135deg, #10b981, #06b6d4);
-    border-radius: 22px;
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    display: inline-block;
     margin-bottom: 30px;
-    box-shadow: 0 8px 32px rgba(16,185,129,0.3);
+    filter: drop-shadow(0 8px 32px rgba(16,185,129,0.3));
   }
-  .logo-top { font-size: 20px; font-weight: 700; color: rgba(255,255,255,0.85); letter-spacing: 1px; }
-  .logo-bottom { font-size: 28px; font-weight: 900; color: white; letter-spacing: 1px; }
   h1 {
     font-size: 72px;
     font-weight: 800;
@@ -87,8 +79,18 @@
 <body>
   <div class="container">
     <div class="logo">
-      <div class="logo-top">CUSTO</div>
-      <div class="logo-bottom">REAL</div>
+      <svg viewBox="0 0 90 90" fill="none" width="90" height="90">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#10b981"/>
+            <stop offset="100%" stop-color="#06b6d4"/>
+          </linearGradient>
+        </defs>
+        <rect width="90" height="90" rx="22" fill="url(#g)"/>
+        <path d="M45 16L72 45L45 74L18 45Z" stroke="white" stroke-width="4" fill="none" stroke-linejoin="round"/>
+        <path d="M45 28L58 45L45 62L32 45Z" fill="rgba(255,255,255,0.25)"/>
+        <circle cx="45" cy="45" r="7.5" fill="white"/>
+      </svg>
     </div>
     <h1>Custo<span>Real</span></h1>
     <p>O custo verdadeiro da sua importacao — impostos reais por NCM</p>

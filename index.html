@@ -23,8 +23,8 @@
 <meta name="twitter:title" content="CustoReal - Calculadora de Importação">
 <meta name="twitter:description" content="Impostos reais por NCM. 10.521 NCMs TEC/TIPI 2026. Grátis.">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/sinivari001-lab/calculadora-importacao/main/og-image.png">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%2310b981'/><stop offset='100%25' stop-color='%2306b6d4'/></linearGradient></defs><rect rx='22' width='100' height='100' fill='url(%23g)'/><text x='50' y='38' font-size='22' text-anchor='middle' fill='rgba(255,255,255,0.9)' font-family='sans-serif' font-weight='800'>CUSTO</text><text x='50' y='72' font-size='30' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='900'>REAL</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%2310b981'/><stop offset='100%25' stop-color='%2306b6d4'/></linearGradient></defs><rect rx='22' width='100' height='100' fill='url(%23g)'/><text x='50' y='38' font-size='22' text-anchor='middle' fill='rgba(255,255,255,0.9)' font-family='sans-serif' font-weight='800'>CUSTO</text><text x='50' y='72' font-size='30' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='900'>REAL</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='100' y2='100' gradientUnits='userSpaceOnUse'><stop offset='0%25' stop-color='%2310b981'/><stop offset='100%25' stop-color='%2306b6d4'/></linearGradient></defs><rect rx='24' width='100' height='100' fill='url(%23g)'/><path d='M50 18L80 50L50 82L20 50Z' stroke='white' stroke-width='5' fill='none' stroke-linejoin='round'/><path d='M50 32L64 50L50 68L36 50Z' fill='rgba(255,255,255,0.25)'/><circle cx='50' cy='50' r='8' fill='white'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='100' y2='100' gradientUnits='userSpaceOnUse'><stop offset='0%25' stop-color='%2310b981'/><stop offset='100%25' stop-color='%2306b6d4'/></linearGradient></defs><rect rx='24' width='100' height='100' fill='url(%23g)'/><path d='M50 18L80 50L50 82L20 50Z' stroke='white' stroke-width='5' fill='none' stroke-linejoin='round'/><path d='M50 32L64 50L50 68L36 50Z' fill='rgba(255,255,255,0.25)'/><circle cx='50' cy='50' r='8' fill='white'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -158,19 +158,10 @@
     z-index: 1;
   }
   .header-logo {
-    width: 40px;
-    height: 40px;
-    background: var(--gradient-accent);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-weight: 800;
-    font-size: 0.9rem;
-    letter-spacing: -0.5px;
+    width: 42px;
+    height: 42px;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px var(--glow);
+    filter: drop-shadow(0 2px 8px var(--glow));
   }
   .header h1 {
     font-size: 1.75rem;
@@ -985,9 +976,19 @@
 <div class="container">
   <div class="header">
     <div class="header-brand">
-      <div class="header-logo" style="border-radius:14px;font-size:0.65rem;line-height:1.1;letter-spacing:0;">
-        <div style="font-size:0.55rem;font-weight:700;opacity:0.85;">CUSTO</div>
-        <div style="font-size:0.8rem;font-weight:900;">REAL</div>
+      <div class="header-logo">
+        <svg viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logoGrad" x1="0" y1="0" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#10b981"/>
+              <stop offset="100%" stop-color="#06b6d4"/>
+            </linearGradient>
+          </defs>
+          <rect width="42" height="42" rx="12" fill="url(#logoGrad)"/>
+          <path d="M21 8L33 21L21 34L9 21Z" stroke="white" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M21 14L27 21L21 28L15 21Z" fill="rgba(255,255,255,0.25)"/>
+          <circle cx="21" cy="21" r="3.5" fill="white"/>
+        </svg>
       </div>
       <div>
         <h1>Custo<span class="brand-accent">Real</span> <span class="header-version">v1.0</span></h1>
@@ -2161,7 +2162,7 @@
 
   <div class="footer">
     <div class="footer-brand">
-      <div class="footer-logo" style="font-size:0.5rem;line-height:1.1;letter-spacing:0;"><div style="font-size:0.4rem;opacity:0.85;">CUSTO</div><div style="font-weight:900;">REAL</div></div>
+      <div class="footer-logo" style="background:none;padding:0;"><svg viewBox="0 0 28 28" fill="none" width="28" height="28"><defs><linearGradient id="fLogo" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs><rect width="28" height="28" rx="7" fill="url(#fLogo)"/><path d="M14 5L22 14L14 23L6 14Z" stroke="white" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M14 9L18 14L14 19L10 14Z" fill="rgba(255,255,255,0.25)"/><circle cx="14" cy="14" r="2.2" fill="white"/></svg></div>
       <span>CustoReal</span>
     </div>
     <span style="font-size:0.65rem;color:var(--text3);">v1.0</span>
@@ -6228,7 +6229,7 @@ setAudience(savedAudience);
     categories: ['business', 'finance', 'utilities'],
     icons: [
       {
-        src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%2310b981'/><stop offset='100%25' stop-color='%2306b6d4'/></linearGradient></defs><rect rx='100' width='512' height='512' fill='url(%23g)'/><text x='256' y='200' font-size='120' text-anchor='middle' fill='rgba(255,255,255,0.9)' font-family='sans-serif' font-weight='800'>CUSTO</text><text x='256' y='360' font-size='160' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='900'>REAL</text></svg>",
+        src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0' y1='0' x2='512' y2='512' gradientUnits='userSpaceOnUse'><stop offset='0%25' stop-color='%2310b981'/><stop offset='100%25' stop-color='%2306b6d4'/></linearGradient></defs><rect rx='110' width='512' height='512' fill='url(%23g)'/><path d='M256 90L410 256L256 422L102 256Z' stroke='white' stroke-width='24' fill='none' stroke-linejoin='round'/><path d='M256 160L330 256L256 352L182 256Z' fill='rgba(255,255,255,0.25)'/><circle cx='256' cy='256' r='42' fill='white'/></svg>",
         sizes: '512x512',
         type: 'image/svg+xml',
         purpose: 'any maskable'
