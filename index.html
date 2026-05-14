@@ -5718,23 +5718,28 @@ const THEME_ICON_LIGHT = '<svg width="14" height="14" viewBox="0 0 24 24" fill="
 // TOUR — On-page spotlight walkthrough
 // ============================================================
 const TOUR_STEPS = [
-  { el: '.tabs', title: 'Escolha a aba', body: '<strong style="color:var(--accent);">NCM Unico</strong> — 1 produto so<br><strong style="color:var(--accent);">Multiplos NCMs</strong> — varios no mesmo envio<br><strong style="color:var(--text3);">Siscomex / Frete</strong> — ferramentas auxiliares', pos: 'bottom' },
+  // ABA 1: NCM Unico
+  { el: '.tabs', title: 'Escolha a aba', body: 'A calculadora tem <strong>4 abas</strong>. Vamos passar por cada uma.<br><br><strong style="color:var(--accent);">NCM Unico</strong> — 1 produto so<br><strong style="color:var(--accent);">Multiplos NCMs</strong> — varios no mesmo envio<br><strong>Siscomex</strong> — taxa da Receita Federal<br><strong>Calc. Frete</strong> — compare modais de frete', pos: 'bottom', tab: 'single' },
   { el: '#s_dolar', title: 'Taxa do dolar', body: 'Atualiza <strong>automaticamente</strong> pela API do Banco Central ao abrir a pagina. Mude manualmente pra simular cenarios.', pos: 'bottom' },
   { el: '#s_tipo_imp', title: 'Tipo de importacao', body: '<strong style="color:var(--accent);">Remessa Conforme:</strong> ate US$50 II 0%, acima II 60% (desc. US$20). ICMS 17-20%.<br><strong>Formal (DI/Duimp):</strong> II + IPI + PIS + COFINS + ICMS por NCM.', pos: 'bottom' },
   { el: '#s_ncm', title: 'Encontre o NCM', body: 'Digite o <strong>nome do produto</strong> (ex: "fone bluetooth") e escolha nas sugestoes. O NCM define automaticamente II%, IPI%, PIS% e COFINS%.<br><br><div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;"><strong style="color:var(--accent);font-size:0.72rem;">NCM ERRADO = MULTA</strong> — valide com seu despachante</div>', pos: 'bottom' },
-  { el: '#s_frete_int', title: 'Frete internacional', body: 'Valor total do frete em US$. Maritimo (30-60 dias, + barato), Aereo (7-15 dias), ou Courier (3-7 dias, + caro).<br>Use a aba <strong>Calc. Frete</strong> pra comparar modais.', pos: 'bottom' },
+  { el: '#s_frete_int', title: 'Frete internacional', body: 'Valor total do frete em US$. Maritimo (30-60 dias, + barato), Aereo (7-15 dias), ou Courier (3-7 dias, + caro).', pos: 'bottom' },
   { el: '#s_estado', title: 'Estado de destino', body: 'Define o <strong>ICMS automaticamente</strong> (17% a 22.5% conforme UF). <strong>Salva</strong> pra proxima vez que voce abrir.', pos: 'top' },
   { el: '#s_modalidade', title: 'Regime tributario', body: '<strong>Simples Nacional:</strong> creditos travados, nao recupera impostos.<br><strong>Presumido/Real:</strong> pode marcar creditos como "S" e recuperar II, IPI, PIS, COFINS, ICMS.', pos: 'top' },
-  { el: '#s_big_result', title: 'Resultado final', body: 'O <strong style="color:var(--accent);">custo unitario em reais</strong> incluindo TODOS os impostos e despesas.<br><br>Custo &lt; 30% do preco de venda = <strong style="color:#22c55e;">excelente margem</strong><br>Custo 30-50% = <strong style="color:#34d399;">boa</strong><br>Custo 50-70% = <strong style="color:#f59e0b;">apertada</strong><br>Custo &gt; 70% = <strong style="color:#ef4444;">nao vale</strong>', pos: 'top' }
+  { el: '#s_big_result', title: 'Resultado final', body: 'O <strong style="color:var(--accent);">custo unitario em reais</strong> incluindo TODOS os impostos e despesas.<br><br>Custo &lt; 30% = <strong style="color:#22c55e;">excelente</strong> · 30-50% = <strong style="color:#34d399;">boa</strong> · 50-70% = <strong style="color:#f59e0b;">apertada</strong> · &gt;70% = <strong style="color:#ef4444;">nao vale</strong>', pos: 'top' },
+  // ABA 2: Multiplos NCMs
+  { el: '#tab-multi', title: 'Multiplos NCMs', body: 'Importe <strong>varios produtos diferentes</strong> no mesmo envio. Cada linha tem seu NCM, quantidade, preco e volume (m3).<br><br>O <strong>frete e rateado</strong> automaticamente pelo volume de cada produto. Cada um tem seus proprios impostos.', pos: 'bottom', tab: 'multi', elFallback: '.tabs button:nth-child(2)' },
+  { el: '#m_tipo_imp', title: 'Dados compartilhados', body: 'Dolar, tipo de importacao, estado e modalidade valem pra <strong>todos os produtos</strong> da lista.<br><br>II% e IPI% sao definidos <strong>automaticamente por NCM</strong> em cada produto.', pos: 'bottom' },
+  // ABA 3: Siscomex
+  { el: '#tab-siscomex', title: 'Calculadora SISCOMEX', body: 'Taxa fixa da Receita Federal em toda importacao formal (DI/Duimp).<br><br>Informe o numero de <strong>adicoes</strong> da DI (cada NCM diferente = 1 adicao).<br><br><strong>Valores:</strong> 1a adicao R$185 · 2a R$29,27 · 3a-5a R$30,85 · 6a-10a R$23,14 · 11a+ diminui.', pos: 'bottom', tab: 'siscomex', elFallback: '.tabs button:nth-child(3)' },
+  // ABA 4: Frete
+  { el: '#tab-frete', title: 'Calculadora de Frete', body: 'Compare <strong>3 modais lado a lado</strong>: Aereo, Maritimo e Courier.<br><br>Informe dimensoes da caixa, peso e quantidade. A calculadora compara <strong>peso real vs cubado</strong> e mostra o custo por unidade.<br><br>Use os botoes "Usar Frete" pra enviar o valor direto pra aba NCM Unico.', pos: 'bottom', tab: 'frete', elFallback: '.tabs button:nth-child(4)' }
 ];
 let tourStep = 0;
 let tourActive = false;
 function openTour() {
   tourStep = 0;
   tourActive = true;
-  // Ensure we're on tab 1
-  const tabBtns = document.querySelectorAll('.tabs button');
-  if (tabBtns[0]) tabBtns[0].click();
   document.getElementById('tour-overlay').style.display = 'block';
   document.getElementById('tour-tooltip').style.display = 'block';
   renderTourStep();
@@ -5743,6 +5748,7 @@ function closeTour() {
   tourActive = false;
   document.getElementById('tour-overlay').style.display = 'none';
   document.getElementById('tour-tooltip').style.display = 'none';
+  switchTab('single');
 }
 function tourNav(dir) {
   tourStep += dir;
@@ -5753,8 +5759,19 @@ function tourNav(dir) {
 function renderTourStep() {
   const s = TOUR_STEPS[tourStep];
   const total = TOUR_STEPS.length;
-  const target = document.querySelector(s.el);
-  if (!target) { tourNav(1); return; }
+  // Switch tab if needed
+  if (s.tab) switchTab(s.tab);
+  // Wait a tick for tab to render
+  const findTarget = () => {
+    let target = document.querySelector(s.el);
+    if ((!target || target.offsetParent === null) && s.elFallback) target = document.querySelector(s.elFallback);
+    return target;
+  };
+  let target = findTarget();
+  if (!target) { setTimeout(() => { target = findTarget(); if (!target) { tourNav(1); return; } doPosition(target, s, total); }, 100); return; }
+  doPosition(target, s, total);
+}
+function doPosition(target, s, total) {
   // Scroll target into view
   target.scrollIntoView({ behavior: 'smooth', block: 'center' });
   setTimeout(() => {
