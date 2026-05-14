@@ -996,7 +996,7 @@
       </div>
     </div>
     <div class="header-buttons" style="margin-top:14px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;">
-      <button class="btn-tutorial" onclick="document.getElementById('tutorial-modal').style.display='flex'">
+      <button class="btn-tutorial" onclick="openTour()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Como usar
       </button>
       <button class="btn-tutorial" id="theme-toggle" onclick="toggleTheme()">
@@ -1035,306 +1035,29 @@
   </div>
 
   <!-- Tutorial Modal -->
-  <div id="tutorial-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:999;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)this.style.display='none'">
-    <div style="background:var(--surface);border-radius:20px;max-width:720px;width:100%;max-height:85vh;overflow-y:auto;padding:36px;box-shadow:0 25px 80px rgba(0,0,0,0.3);position:relative;border:1px solid var(--border);">
-      <button onclick="document.getElementById('tutorial-modal').style.display='none'" style="position:absolute;top:16px;right:16px;background:var(--surface2);border:1px solid var(--border);width:32px;height:32px;border-radius:8px;font-size:1.1rem;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center;transition:all 0.2s;" onmouseover="this.style.background='var(--accent-dim)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--surface2)';this.style.color='var(--text3)'">&times;</button>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-        <div style="width:32px;height:32px;background:var(--gradient-accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  <div id="tutorial-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:999;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)closeTour()">
+    <div style="background:var(--surface);border-radius:24px;max-width:580px;width:100%;box-shadow:0 25px 80px rgba(0,0,0,0.4);position:relative;border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;max-height:85vh;">
+      <!-- Header -->
+      <div style="padding:24px 28px 0;flex-shrink:0;">
+        <button onclick="closeTour()" style="position:absolute;top:16px;right:16px;background:var(--surface2);border:1px solid var(--border);width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:2;" onmouseover="this.style.background='var(--accent-dim)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--surface2)';this.style.color='var(--text3)'">&times;</button>
+        <!-- Progress bar -->
+        <div style="display:flex;gap:4px;margin-bottom:20px;">
+          <div id="tour-progress"></div>
         </div>
-        <div>
-          <h2 style="margin:0;color:var(--text);font-size:1.2rem;font-weight:700;">Guia de Utilização</h2>
-          <p style="color:var(--text3);font-size:0.75rem;margin:2px 0 0;">10 passos para calcular o custo real da sua importação</p>
-        </div>
-      </div>
-      <div style="height:1px;background:var(--border);margin:16px 0 20px;"></div>
-
-      <!-- STEP 1 -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.75rem;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Escolha a aba certa</h3>
-        </div>
-        <div style="margin-left:38px;font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          <strong style="color:var(--accent);">NCM Único</strong> — Você vai importar <strong>1 produto só</strong>. Ex: 500 formas de silicone.<br>
-          <strong style="color:var(--accent);">Múltiplos NCMs</strong> — Você vai importar <strong>vários produtos</strong> no mesmo container/envio. Ex: 200 capinhas + 300 fones + 100 relógios.<br>
-          <strong style="color:var(--accent);">Siscomex</strong> — Só pra consultar a taxa Siscomex (usa quando o despachante pedir).
+        <!-- Step counter -->
+        <div style="font-size:0.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">
+          Passo <span id="tour-current">1</span> de <span id="tour-total">8</span>
         </div>
       </div>
-
-      <!-- STEP 2 -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.75rem;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Preencha o produto</h3>
-        </div>
-        <div style="margin-left:38px;font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          <strong>Preço unitário (USD):</strong> O preço FOB de cada unidade no fornecedor (Alibaba, 1688, etc.)<br>
-          <strong>Quantidade:</strong> Quantas unidades você vai comprar<br>
-          <strong>Dólar:</strong> Já vem atualizado automático. Pode alterar se quiser simular outro valor.<br>
-          <div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;margin-top:6px;">
-            <strong style="color:var(--accent);font-size:0.75rem;">DICA:</strong> <span style="font-size:0.78rem;">Mude a quantidade pra ver como o custo cai com volume. 100un vs 500un faz diferença enorme.</span>
-          </div>
-        </div>
+      <!-- Content area -->
+      <div id="tour-content" style="padding:0 28px;overflow-y:auto;flex:1;"></div>
+      <!-- Navigation -->
+      <div style="padding:20px 28px;display:flex;gap:10px;align-items:center;flex-shrink:0;border-top:1px solid var(--border);">
+        <button id="tour-prev" onclick="tourNav(-1)" style="padding:10px 20px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:0.82rem;font-weight:600;cursor:pointer;color:var(--text2);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">Anterior</button>
+        <div style="flex:1;"></div>
+        <button id="tour-skip" onclick="closeTour()" style="padding:10px 16px;background:none;border:none;font-size:0.78rem;cursor:pointer;color:var(--text3);transition:all 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">Pular tour</button>
+        <button id="tour-next" onclick="tourNav(1)" style="padding:10px 24px;background:var(--gradient-accent);border:none;border-radius:10px;font-size:0.82rem;font-weight:700;cursor:pointer;color:white;transition:all 0.2s;box-shadow:0 2px 8px var(--glow);" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">Proximo</button>
       </div>
-
-      <!-- STEP 3 -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.75rem;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Selecione seu estado</h3>
-        </div>
-        <div style="margin-left:38px;font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          Clique no dropdown <strong>"Estado de Destino"</strong> e escolha o seu estado.<br>
-          O <strong>ICMS preenche sozinho</strong> com a alíquota correta (varia de 17% a 22%).<br>
-          O estado <strong>salva automaticamente</strong> — da próxima vez que abrir, já vai estar selecionado.
-        </div>
-      </div>
-
-      <!-- STEP 4 -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.75rem;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Escolha o tipo de importação</h3>
-        </div>
-        <div style="margin-left:38px;font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          <strong style="color:var(--accent);">Remessa Conforme</strong> — Até US$50: II 0% (isento, MP 1.357/2026). Acima de US$50: II 60% com desconto de US$20. ICMS 17% (ou 20% em 10 estados desde abr/2025). Sem PIS/COFINS/IPI.<br>
-          <strong style="color:var(--accent);">Importação Formal (DI/Duimp)</strong> — Processo completo com II, IPI, PIS, COFINS e ICMS variáveis por NCM e estado. Para importações com DI/Duimp via despachante.
-        </div>
-      </div>
-
-      <!-- STEP 5 -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.75rem;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">5</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Preencha frete e seguro</h3>
-        </div>
-        <div style="margin-left:38px;font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          <strong>Frete internacional (USD):</strong> O valor total que o fornecedor/agente cobra pelo envio.<br>
-          <strong>Seguro (USD):</strong> Geralmente 0.5% a 1% do valor da mercadoria. Pode deixar 0 se não tiver.<br>
-          <strong>Via de transporte:</strong><br>
-          &nbsp;&nbsp;- <strong>Marítimo:</strong> Mais barato, demora 30-60 dias. Calcula AFRMM (8% do frete) automático.<br>
-          &nbsp;&nbsp;- <strong>Aéreo:</strong> Mais rápido (7-15 dias), mais caro. Sem AFRMM.<br>
-          &nbsp;&nbsp;- <strong>Courier:</strong> DHL/FedEx, porta a porta, o mais rápido e caro. Sem AFRMM.
-        </div>
-      </div>
-
-      <!-- STEP 6 -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.75rem;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">6</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Encontre o NCM do produto</h3>
-        </div>
-        <div style="margin-left:38px;font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          O NCM é o código de 8 dígitos que define os impostos do produto. Você tem 3 formas de encontrar:<br><br>
-          <strong>1. Busca rápida:</strong> Digite o nome do produto (ex: "fone bluetooth") e escolha nas sugestões.<br>
-          <strong>2. Tabela NCM:</strong> Role até o final da página e use a tabela com +1800 produtos.<br>
-          <strong>3. Portal Siscomex:</strong> <a href="https://portalunico.siscomex.gov.br/classif/" target="_blank" style="color:var(--accent);">portalunico.siscomex.gov.br/classif</a><br><br>
-          Quando você seleciona o NCM, o <strong>II%, IPI%, PIS% e COFINS% preenchem automaticamente</strong>.
-          <div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;margin-top:6px;">
-            <strong style="color:var(--accent);font-size:0.75rem;">NÃO SABE O NCM?</strong> <span style="font-size:0.78rem;">Pergunte ao fornecedor ou ao despachante. NCM errado = multa na aduana.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 7 -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.75rem;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">7</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Modalidade tributária</h3>
-        </div>
-        <div style="margin-left:38px;font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          <strong style="color:var(--accent);">Simples Nacional:</strong> Microempresa/EPP. Créditos ficam travados em "N" (você NÃO recupera impostos).<br>
-          <strong style="color:var(--accent);">Lucro Presumido/Real:</strong> Pode marcar créditos como "S" nos impostos que recupera (II, IPI, PIS, COFINS, ICMS).
-        </div>
-      </div>
-
-      <!-- STEP 8 -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.75rem;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">8</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Despesas extras (opcional)</h3>
-        </div>
-        <div style="margin-left:38px;font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          Clique em <strong>"Despesas NF + Extras"</strong> para expandir. Preencha se souber:<br>
-          &nbsp;&nbsp;- <strong>Despachante:</strong> R$800-2500 por DI (pergunte ao seu)<br>
-          &nbsp;&nbsp;- <strong>Armazenagem:</strong> Custo do armazém no porto/aeroporto<br>
-          &nbsp;&nbsp;- <strong>Capatazia:</strong> Manuseio da carga no terminal<br>
-          &nbsp;&nbsp;- <strong>Trading:</strong> Se usa agente de compras na China<br>
-          <div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;margin-top:6px;">
-            <strong style="color:var(--accent);font-size:0.75rem;">PRIMEIRA VEZ?</strong> <span style="font-size:0.78rem;">Deixe zerado. O resultado mostra o custo mínimo. Depois ajuste com valores reais do despachante.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 9 -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.75rem;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">9</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Leia o resultado</h3>
-        </div>
-        <div style="margin-left:38px;font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          O número grande é o <strong>custo unitário final em reais</strong> — quanto cada unidade vai te custar incluindo TUDO.<br><br>
-          Abaixo dele você vê o breakdown completo:<br>
-          &nbsp;&nbsp;- Valor aduaneiro (produto + frete + seguro em reais)<br>
-          &nbsp;&nbsp;- Cada imposto calculado separadamente<br>
-          &nbsp;&nbsp;- AFRMM (se marítimo)<br>
-          &nbsp;&nbsp;- Siscomex<br>
-          &nbsp;&nbsp;- Despesas extras<br>
-          &nbsp;&nbsp;- <strong>Custo total e custo por unidade</strong>
-        </div>
-      </div>
-
-      <!-- STEP 10 -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.75rem;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">10</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Avalie se vale a pena</h3>
-        </div>
-        <div style="margin-left:38px;font-size:0.82rem;color:var(--text2);line-height:1.7;">
-          Compare o <strong>custo unitário</strong> com o preço que você pretende vender:<br><br>
-          <table style="width:100%;font-size:0.8rem;border-collapse:collapse;">
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:4px 8px;">Custo &lt; 30% do preço de venda</td><td style="padding:4px 8px;color:#22c55e;font-weight:600;">Excelente margem</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:4px 8px;">Custo 30-50% do preço de venda</td><td style="padding:4px 8px;color:#34d399;font-weight:600;">Margem boa</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:4px 8px;">Custo 50-70% do preço de venda</td><td style="padding:4px 8px;color:#f59e0b;font-weight:600;">Margem apertada</td></tr>
-            <tr><td style="padding:4px 8px;">Custo &gt; 70% do preço de venda</td><td style="padding:4px 8px;color:#ef4444;font-weight:600;">Não vale a pena</td></tr>
-          </table>
-        </div>
-      </div>
-
-      <!-- EXEMPLO PRATICO -->
-      <div style="margin-bottom:18px;background:linear-gradient(135deg, rgba(34,197,94,0.08), rgba(52,211,153,0.08));border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:16px 18px;">
-        <h3 style="color:#22c55e;font-size:0.85rem;text-transform:uppercase;margin-bottom:10px;">Exemplo prático completo</h3>
-        <div style="font-size:0.82rem;color:var(--text2);line-height:1.8;">
-          <strong>Produto:</strong> Forma de silicone para bolo (Alibaba)<br>
-          <strong>Preço FOB:</strong> U$0.67 por unidade<br>
-          <strong>Quantidade:</strong> 300 unidades<br>
-          <strong>Frete aéreo:</strong> U$200 (total)<br>
-          <strong>Dólar:</strong> R$5.70<br>
-          <strong>Estado:</strong> BA (ICMS 20.5%)<br>
-          <strong>NCM:</strong> 3924.10.00 (II 18%, IPI 5%)<br>
-          <strong>Modalidade:</strong> Simples Nacional<br>
-          <hr style="border-color:var(--border);margin:8px 0;">
-          <strong style="color:var(--accent);">Resultado:</strong> Custo unitário ~R$8-10<br>
-          <strong style="color:#22c55e;">Venda no ML:</strong> R$29.90 → Margem ~66% → <strong>Vale muito a pena!</strong>
-        </div>
-      </div>
-
-      <!-- GUIA POR ABAS -->
-      <div style="height:1px;background:var(--border);margin:24px 0;"></div>
-      <h2 style="color:var(--text);font-size:1.1rem;font-weight:700;margin-bottom:16px;text-align:center;">Guia por Aba</h2>
-
-      <!-- ABA 1: NCM UNICO -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.65rem;padding:4px 10px;border-radius:6px;">ABA 1</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">NCM Unico</h3>
-        </div>
-        <div style="margin-left:10px;font-size:0.82rem;color:var(--text2);line-height:1.8;">
-          <strong>Quando usar:</strong> Voce vai importar <strong>1 produto so</strong> (ex: 500 formas de silicone, 300 fones bluetooth).<br><br>
-          <strong>Campos principais:</strong><br>
-          &bull; <strong style="color:var(--accent);">Preco unitario (US$):</strong> Preco FOB de cada unidade no fornecedor (Alibaba, 1688)<br>
-          &bull; <strong style="color:var(--accent);">Quantidade:</strong> Total de unidades que vai comprar<br>
-          &bull; <strong style="color:var(--accent);">NCM:</strong> Codigo de 8 digitos que define os impostos &mdash; digite o nome do produto e escolha nas sugestoes<br>
-          &bull; <strong style="color:var(--accent);">Frete internacional (US$):</strong> Valor total do frete que o agente de carga cobrou<br>
-          &bull; <strong style="color:var(--accent);">Tipo de importacao:</strong> Remessa Conforme (ate US$3.000) ou Formal (DI/Duimp)<br><br>
-          <strong>Resultado:</strong> Mostra o <strong>custo unitario em reais</strong> com todos os impostos (II, IPI, PIS, COFINS, ICMS) + despesas.<br><br>
-          <strong>Simulador de margem:</strong> Preencha o "Preco de Venda" pra ver sua margem bruta e lucro por unidade.<br>
-          <div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;margin-top:8px;">
-            <strong style="color:var(--accent);font-size:0.75rem;">DICA:</strong> <span style="font-size:0.78rem;">Use o botao "Exemplo" no topo pra ver um caso real preenchido. Mude a quantidade pra ver como o custo cai com volume.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ABA 2: MULTIPLOS NCMs -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.65rem;padding:4px 10px;border-radius:6px;">ABA 2</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Multiplos NCMs</h3>
-        </div>
-        <div style="margin-left:10px;font-size:0.82rem;color:var(--text2);line-height:1.8;">
-          <strong>Quando usar:</strong> Voce vai importar <strong>varios produtos diferentes</strong> no mesmo envio (ex: 200 capinhas + 300 fones + 100 relogios).<br><br>
-          <strong>Como funciona:</strong><br>
-          &bull; Cada linha e um produto com NCM, quantidade, preco e volume (m3) proprios<br>
-          &bull; O <strong>frete e rateado</strong> automaticamente entre os produtos pela proporcao do volume (m3) de cada um<br>
-          &bull; Cada produto tem seus proprios impostos (II%, IPI%, PIS% e COFINS% baseados no NCM)<br>
-          &bull; O resultado mostra o <strong>custo unitario de cada produto</strong> separadamente<br><br>
-          <strong>Atalhos:</strong><br>
-          &bull; Use os botoes de template (<strong>Tech, Casa, Moda, Auto, Esporte, Beleza</strong>) pra adicionar produtos de exemplo<br>
-          &bull; Digite o nome ou NCM no campo de busca pra encontrar o produto<br>
-          &bull; Clique no <strong style="color:var(--red);">X</strong> vermelho pra remover um produto da lista<br>
-          <div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;margin-top:8px;">
-            <strong style="color:var(--accent);font-size:0.75rem;">DICA:</strong> <span style="font-size:0.78rem;">O campo "m3" e o volume que cada produto ocupa no container. Peca essa informacao ao fornecedor. Se nao souber, calcule: (C x L x A em cm) / 1.000.000.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ABA 3: SISCOMEX -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.65rem;padding:4px 10px;border-radius:6px;">ABA 3</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Calculadora SISCOMEX</h3>
-        </div>
-        <div style="margin-left:10px;font-size:0.82rem;color:var(--text2);line-height:1.8;">
-          <strong>O que e:</strong> A taxa Siscomex e uma taxa fixa cobrada pela Receita Federal em toda importacao formal (DI/Duimp). Nao se aplica a Remessa Conforme.<br><br>
-          <strong>Como funciona:</strong><br>
-          &bull; Informe o numero de <strong>adicoes</strong> da sua DI (cada produto com NCM diferente e uma adicao)<br>
-          &bull; A calculadora mostra o valor exato da taxa com as faixas oficiais<br><br>
-          <strong>Tabela de referencia:</strong><br>
-          &bull; 1a adicao: R$ 185,00 (fixa)<br>
-          &bull; 2a adicao: R$ 29,27<br>
-          &bull; 3a-5a: R$ 30,85 cada<br>
-          &bull; 6a-10a: R$ 23,14 cada<br>
-          &bull; 11a-20a: R$ 15,42 cada<br>
-          &bull; 21a-50a: R$ 7,71 cada<br>
-          &bull; 51+: R$ 3,86 cada<br>
-          <div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;margin-top:8px;">
-            <strong style="color:var(--accent);font-size:0.75rem;">QUANDO USAR:</strong> <span style="font-size:0.78rem;">Quando seu despachante pedir o valor do Siscomex ou quando voce quiser incluir essa despesa no calculo da aba NCM Unico (campo "Siscomex").</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ABA 4: CALCULADORA DE FRETE -->
-      <div style="margin-bottom:18px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="background:var(--gradient-accent);color:#fff;font-weight:700;font-size:0.65rem;padding:4px 10px;border-radius:6px;">ABA 4</span>
-          <h3 style="color:var(--text);font-size:0.95rem;margin:0;">Calculadora de Frete</h3>
-        </div>
-        <div style="margin-left:10px;font-size:0.82rem;color:var(--text2);line-height:1.8;">
-          <strong>Quando usar:</strong> Antes de fechar com o agente de carga &mdash; pra saber quanto o frete <strong>deveria custar</strong> e comparar com a cotacao recebida.<br><br>
-          <strong>Campos:</strong><br>
-          &bull; <strong style="color:var(--accent);">Dimensoes da caixa (cm):</strong> Comprimento, largura e altura &mdash; peca ao fornecedor<br>
-          &bull; <strong style="color:var(--accent);">Peso por caixa (kg):</strong> Peso bruto (G.W.) que vem na packing list<br>
-          &bull; <strong style="color:var(--accent);">Qtd caixas:</strong> Quantas caixas no total<br>
-          &bull; <strong style="color:var(--accent);">Unid/caixa:</strong> Quantas unidades cabem em cada caixa<br>
-          &bull; <strong style="color:var(--accent);">Frete Cotado (R$):</strong> O valor que o agente de carga te passou &mdash; aparece como 4o modal pra comparar<br><br>
-          <strong>O que a calculadora faz:</strong><br>
-          &bull; Calcula o <strong>peso cubado</strong> (volumetrico) automaticamente pra cada modal<br>
-          &bull; Compara <strong>peso real vs cubado</strong> &mdash; o frete e cobrado pelo maior dos dois<br>
-          &bull; Mostra <strong>3 modais lado a lado</strong>: Aereo (5-10 dias), Maritimo (30-45 dias), Courier (3-7 dias)<br>
-          &bull; Destaca o <strong>melhor custo-beneficio</strong> em verde<br>
-          &bull; Calcula o <strong>R$ por unidade</strong> pra voce saber o impacto no custo final<br><br>
-          <strong>Integracao:</strong> Use os botoes "Usar Frete Aereo/Maritimo/Courier" pra enviar o valor direto pro campo de frete da aba NCM Unico.<br>
-          <div style="background:var(--accent-dim);border-radius:6px;padding:6px 10px;margin-top:8px;">
-            <strong style="color:var(--accent);font-size:0.75rem;">PESO CUBADO:</strong> <span style="font-size:0.78rem;">Aereo divide por 6.000, Courier por 5.000, Maritimo usa CBM. Se sua caixa e grande mas leve, o peso cubado vence e voce paga mais. Negocie caixas menores com o fornecedor!</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- DICAS GERAIS -->
-      <div style="margin-bottom:18px;background:linear-gradient(135deg, rgba(34,197,94,0.08), rgba(52,211,153,0.08));border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:16px 18px;">
-        <h3 style="color:#22c55e;font-size:0.85rem;text-transform:uppercase;margin-bottom:10px;">Dicas importantes</h3>
-        <div style="font-size:0.82rem;color:var(--text2);line-height:1.8;">
-          &bull; <strong>Dolar atualiza sozinho</strong> ao abrir a calculadora. Pode mudar manualmente pra simular cenarios.<br>
-          &bull; <strong>Estado salva automaticamente</strong> &mdash; nao precisa selecionar toda vez.<br>
-          &bull; <strong>Limpar Campos:</strong> Botao no canto superior direito de cada aba zera tudo pra nova simulacao.<br>
-          &bull; <strong>Tema claro/escuro:</strong> Alterne pelo botao no topo da pagina.<br>
-          &bull; <strong>Resultados sao estimativas</strong> &mdash; sempre confirme valores finais com seu despachante antes de fechar a compra.<br>
-          &bull; <strong>NCM errado = multa:</strong> Valide o NCM no <a href="https://portalunico.siscomex.gov.br/classif/" target="_blank" style="color:var(--accent);">Portal Siscomex</a> ou com seu despachante.
-        </div>
-      </div>
-
-      <button onclick="document.getElementById('tutorial-modal').style.display='none'" style="margin-top:24px;width:100%;padding:14px;background:var(--gradient-accent);color:white;border:none;border-radius:10px;font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.3s;box-shadow:0 2px 8px var(--glow);letter-spacing:0.3px;" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 16px var(--glow)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 2px 8px var(--glow)'">Entendi, fechar guia</button>
     </div>
   </div>
 
@@ -2171,7 +1894,7 @@
     <br>
     Ferramenta gratuita para uso pessoal e comercial &middot; Resultados são estimativas &mdash; consulte seu despachante para valores definitivos
     <div class="footer-links">
-      <a href="#" onclick="document.getElementById('tutorial-modal').style.display='flex';return false;">Como usar</a>
+      <a href="#" onclick="openTour();return false;">Como usar</a>
       <span class="footer-divider"></span>
       <a href="https://portalunico.siscomex.gov.br/classif/" target="_blank" rel="noopener">Siscomex</a>
       <span class="footer-divider"></span>
@@ -5994,6 +5717,102 @@ function clearExample() {
 // ============================================================
 const THEME_ICON_DARK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 const THEME_ICON_LIGHT = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+
+// ============================================================
+// TOUR — Interactive step-by-step guide
+// ============================================================
+const TOUR_STEPS = [
+  {
+    title: 'Bem-vindo ao CustoReal',
+    icon: '<svg viewBox="0 0 42 42" fill="none" width="48" height="48"><defs><linearGradient id="tg" x1="0" y1="0" x2="42" y2="42" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs><rect width="42" height="42" rx="12" fill="url(#tg)"/><path d="M21 8L33 21L21 34L9 21Z" stroke="white" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M21 14L27 21L21 28L15 21Z" fill="rgba(255,255,255,0.25)"/><circle cx="21" cy="21" r="3.5" fill="white"/></svg>',
+    body: 'Calcule o <strong>custo real</strong> de qualquer importacao em poucos minutos.<br><br>Este tour vai te guiar passo a passo. Sao <strong>8 passos rapidos</strong> — voce vai aprender a usar tudo.<br><br><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;"><div style="background:var(--accent-dim);border-radius:8px;padding:10px;text-align:center;"><div style="font-size:1.2rem;font-weight:800;color:var(--accent);">10.521</div><div style="font-size:0.7rem;color:var(--text3);">NCMs</div></div><div style="background:var(--accent-dim);border-radius:8px;padding:10px;text-align:center;"><div style="font-size:1.2rem;font-weight:800;color:var(--accent);">6</div><div style="font-size:0.7rem;color:var(--text3);">impostos</div></div></div>'
+  },
+  {
+    title: 'Escolha a aba certa',
+    icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+    body: '<div style="display:flex;flex-direction:column;gap:10px;"><div style="background:var(--accent-dim);border-radius:10px;padding:12px 14px;border-left:3px solid var(--accent);"><strong style="color:var(--accent);">NCM Unico</strong><br><span style="font-size:0.8rem;color:var(--text2);">1 produto so. Ex: 500 formas de silicone.</span></div><div style="background:var(--accent-dim);border-radius:10px;padding:12px 14px;border-left:3px solid var(--accent);"><strong style="color:var(--accent);">Multiplos NCMs</strong><br><span style="font-size:0.8rem;color:var(--text2);">Varios produtos no mesmo envio. Ex: capinhas + fones + relogios.</span></div><div style="background:var(--surface2);border-radius:10px;padding:12px 14px;border-left:3px solid var(--text3);"><strong style="color:var(--text3);">Siscomex / Frete</strong><br><span style="font-size:0.8rem;color:var(--text3);">Ferramentas auxiliares — taxa Siscomex e comparador de frete.</span></div></div>'
+  },
+  {
+    title: 'Produto e estado',
+    icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+    body: '<strong>Preco unitario (US$):</strong> preco FOB de cada unidade no fornecedor.<br><strong>Quantidade:</strong> total de unidades.<br><strong>Dolar:</strong> atualiza sozinho pela API do BCB.<br><br><strong>Estado de Destino:</strong> define o ICMS automaticamente (17% a 22.5%). Salva pra proxima vez.<br><br><div style="background:var(--accent-dim);border-radius:8px;padding:8px 12px;"><strong style="color:var(--accent);font-size:0.75rem;">DICA</strong><br><span style="font-size:0.8rem;">Mude a quantidade pra ver como o custo cai com volume. 100un vs 500un faz diferenca enorme.</span></div>'
+  },
+  {
+    title: 'Tipo de importacao',
+    icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+    body: '<div style="background:var(--accent-dim);border-radius:10px;padding:14px;margin-bottom:10px;border-left:3px solid var(--accent);"><strong style="color:var(--accent);font-size:0.9rem;">Remessa Conforme</strong><br><span style="font-size:0.82rem;">Ate US$50: <strong>II 0%</strong> (isento)<br>Acima US$50: <strong>II 60%</strong> com desc. US$20<br>ICMS 17% ou 20% · Sem PIS/COFINS/IPI</span></div><div style="background:var(--surface2);border-radius:10px;padding:14px;border-left:3px solid var(--text2);"><strong style="color:var(--text);font-size:0.9rem;">Importacao Formal (DI/Duimp)</strong><br><span style="font-size:0.82rem;">II + IPI + PIS + COFINS + ICMS<br>Aliquotas variam por NCM e estado<br>Para importacoes com despachante</span></div>'
+  },
+  {
+    title: 'Frete, seguro e NCM',
+    icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
+    body: '<strong>Frete internacional (US$):</strong> valor total do envio.<br><strong>Seguro:</strong> 0.5-1% do valor. Pode deixar 0.<br><br><strong>Via de transporte:</strong><br><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:8px 0;"><div style="background:var(--surface2);border-radius:8px;padding:8px;text-align:center;font-size:0.75rem;"><div style="font-size:1rem;">&#9875;</div><strong>Maritimo</strong><br>30-60 dias<br>+ barato</div><div style="background:var(--surface2);border-radius:8px;padding:8px;text-align:center;font-size:0.75rem;"><div style="font-size:1rem;">&#9992;</div><strong>Aereo</strong><br>7-15 dias<br>medio</div><div style="background:var(--surface2);border-radius:8px;padding:8px;text-align:center;font-size:0.75rem;"><div style="font-size:1rem;">&#128230;</div><strong>Courier</strong><br>3-7 dias<br>+ caro</div></div><strong>NCM:</strong> codigo de 8 digitos dos impostos. <strong>Digite o nome do produto</strong> e escolha nas sugestoes, ou consulte no <a href="https://portalunico.siscomex.gov.br/classif/" target="_blank" style="color:var(--accent);">Siscomex</a>.<br><br><div style="background:var(--accent-dim);border-radius:8px;padding:8px 12px;"><strong style="color:var(--accent);font-size:0.75rem;">NCM ERRADO = MULTA</strong><br><span style="font-size:0.8rem;">Valide sempre com seu despachante.</span></div>'
+  },
+  {
+    title: 'Regime e despesas',
+    icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
+    body: '<strong>Modalidade tributaria:</strong><br><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;"><div style="background:var(--surface2);border-radius:8px;padding:10px;font-size:0.8rem;"><strong>Simples Nacional</strong><br>Creditos travados em N<br><span style="color:var(--text3);font-size:0.75rem;">Nao recupera impostos</span></div><div style="background:var(--accent-dim);border-radius:8px;padding:10px;font-size:0.8rem;"><strong style="color:var(--accent);">Presumido/Real</strong><br>Marque creditos = S<br><span style="color:var(--text3);font-size:0.75rem;">Recupera II, IPI, PIS, COFINS, ICMS</span></div></div><strong>Despesas extras (opcional):</strong><br>Despachante R$800-2500, armazenagem, capatazia, trading...<br><br><div style="background:var(--accent-dim);border-radius:8px;padding:8px 12px;"><strong style="color:var(--accent);font-size:0.75rem;">PRIMEIRA VEZ?</strong><br><span style="font-size:0.8rem;">Deixe zerado. O resultado mostra o custo minimo.</span></div>'
+  },
+  {
+    title: 'Leia o resultado',
+    icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+    body: 'O numero grande e o <strong style="color:var(--accent);">custo unitario final em reais</strong> — incluindo TUDO.<br><br>Abaixo, o breakdown completo: valor aduaneiro, cada imposto, AFRMM, Siscomex, despesas.<br><br><strong>Avalie se vale a pena:</strong><br><div style="margin:8px 0;font-size:0.82rem;"><div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);"><span style="width:10px;height:10px;border-radius:50%;background:#22c55e;flex-shrink:0;"></span><span>Custo &lt; 30% do preco de venda</span><strong style="color:#22c55e;margin-left:auto;">Excelente</strong></div><div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);"><span style="width:10px;height:10px;border-radius:50%;background:#34d399;flex-shrink:0;"></span><span>Custo 30-50%</span><strong style="color:#34d399;margin-left:auto;">Boa</strong></div><div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span><span>Custo 50-70%</span><strong style="color:#f59e0b;margin-left:auto;">Apertada</strong></div><div style="display:flex;align-items:center;gap:8px;padding:6px 0;"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;flex-shrink:0;"></span><span>Custo &gt; 70%</span><strong style="color:#ef4444;margin-left:auto;">Nao vale</strong></div></div>'
+  },
+  {
+    title: 'Exemplo pratico',
+    icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    body: '<div style="background:linear-gradient(135deg, rgba(34,197,94,0.08), rgba(52,211,153,0.08));border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:16px;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:0.82rem;color:var(--text2);line-height:2;"><span><strong>Produto:</strong> Forma silicone</span><span><strong>NCM:</strong> 3924.10.00</span><span><strong>Preco:</strong> US$0.67/un</span><span><strong>II:</strong> 18% · <strong>IPI:</strong> 5%</span><span><strong>Qtd:</strong> 300 unidades</span><span><strong>Estado:</strong> BA (20.5%)</span><span><strong>Frete aereo:</strong> US$200</span><span><strong>Regime:</strong> Simples Nacional</span></div><div style="height:1px;background:rgba(34,197,94,0.2);margin:12px 0;"></div><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:0.7rem;color:var(--text3);text-transform:uppercase;">Custo unitario</div><div style="font-size:1.4rem;font-weight:800;color:var(--accent);">~R$ 8-10</div></div><div style="text-align:right;"><div style="font-size:0.7rem;color:var(--text3);text-transform:uppercase;">Venda ML</div><div style="font-size:1.4rem;font-weight:800;color:#22c55e;">R$ 29,90</div></div></div><div style="text-align:center;margin-top:8px;font-size:0.85rem;font-weight:700;color:#22c55e;">Margem ~66% — Vale muito a pena!</div></div><br><div style="font-size:0.78rem;color:var(--text3);line-height:1.6;"><strong style="color:var(--text2);">Dicas finais:</strong><br>&#8226; Dolar atualiza sozinho ao abrir<br>&#8226; Estado salva automaticamente<br>&#8226; Resultados sao estimativas — confirme com seu despachante<br>&#8226; Use o botao "Exemplo" no topo pra testar</div>'
+  }
+];
+let tourStep = 0;
+function openTour() {
+  tourStep = 0;
+  document.getElementById('tutorial-modal').style.display = 'flex';
+  renderTourStep();
+}
+function closeTour() {
+  document.getElementById('tutorial-modal').style.display = 'none';
+}
+function tourNav(dir) {
+  tourStep += dir;
+  if (tourStep >= TOUR_STEPS.length) { closeTour(); return; }
+  if (tourStep < 0) tourStep = 0;
+  renderTourStep();
+}
+function renderTourStep() {
+  const s = TOUR_STEPS[tourStep];
+  const total = TOUR_STEPS.length;
+  document.getElementById('tour-current').textContent = tourStep + 1;
+  document.getElementById('tour-total').textContent = total;
+  // Progress bar
+  let progHTML = '';
+  for (let i = 0; i < total; i++) {
+    const active = i <= tourStep;
+    progHTML += '<div style="flex:1;height:3px;border-radius:2px;background:' + (active ? 'var(--accent)' : 'var(--border)') + ';transition:background 0.3s;"></div>';
+  }
+  document.getElementById('tour-progress').innerHTML = progHTML;
+  document.getElementById('tour-progress').style.cssText = 'display:flex;gap:4px;width:100%;';
+  // Content
+  const content = document.getElementById('tour-content');
+  content.style.opacity = '0';
+  setTimeout(() => {
+    content.innerHTML = '<div style="text-align:center;margin-bottom:16px;">' + s.icon + '</div>' +
+      '<h2 style="margin:0 0 16px;color:var(--text);font-size:1.3rem;font-weight:800;text-align:center;">' + s.title + '</h2>' +
+      '<div style="font-size:0.85rem;color:var(--text2);line-height:1.7;padding-bottom:8px;">' + s.body + '</div>';
+    content.scrollTop = 0;
+    content.style.opacity = '1';
+  }, 150);
+  content.style.transition = 'opacity 0.15s ease';
+  // Buttons
+  document.getElementById('tour-prev').style.display = tourStep === 0 ? 'none' : '';
+  const nextBtn = document.getElementById('tour-next');
+  if (tourStep === total - 1) {
+    nextBtn.textContent = 'Comecar!';
+    nextBtn.style.background = 'linear-gradient(135deg, #22c55e, #10b981)';
+  } else {
+    nextBtn.textContent = 'Proximo';
+    nextBtn.style.background = 'var(--gradient-accent)';
+  }
+}
 
 function toggleTheme() {
   const html = document.documentElement;
