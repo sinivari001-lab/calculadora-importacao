@@ -1638,13 +1638,19 @@
 
   <!-- ==================== ABA 2: MULTIPLOS NCMs ==================== -->
   <div id="tab-multi" class="tab-content">
-    <!-- Dados Compartilhados - full width, centered -->
+    <!-- Dados Compartilhados - full width -->
     <div class="card">
       <div class="card-title">Dados Compartilhados</div>
       <div class="grid-4" style="grid-template-columns: repeat(4, 1fr);">
         <div class="field">
           <label>Taxa Cambial (R$/US$)</label>
           <input type="number" id="m_dolar" class="critical-input" value="5.70" step="0.01" min="0" oninput="syncDolar('m');calcMulti()">
+        </div>
+        <div class="field">
+          <label>Estado de Destino</label>
+          <select id="m_estado" onchange="onStateChange('m')" style="width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.95rem;cursor:pointer;">
+            <option value="">-- Selecione --</option>
+          </select>
         </div>
         <div class="field">
           <label>Tipo de Importação</label>
@@ -1661,19 +1667,69 @@
             <option value="real">Lucro Real</option>
           </select>
         </div>
-        <div class="field">
-          <label>II Alíquota %</label>
-          <input type="number" id="m_ii_aliq" value="18" step="0.01" min="0" max="100" oninput="calcMulti()">
-        </div>
       </div>
+      <div style="margin-top:8px;font-size:0.72rem;color:var(--text3);">II% e IPI% são definidos automaticamente por NCM em cada produto. PIS 2,10% · COFINS 9,65% · ICMS pelo estado.</div>
+      <!-- Hidden fields for global fallbacks (used by calcMulti when product has no NCM) -->
+      <input type="hidden" id="m_ii_aliq" value="18">
     </div>
 
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-title">Despesas NF + Extras (rateadas)</div>
-        <details>
-          <summary>Expandir despesas NF e processo</summary>
-          <div class="grid-3" style="margin-top:8px;">
+    <!-- Impostos e Despesas - collapsible -->
+    <div class="card">
+      <details>
+        <summary style="cursor:pointer;font-size:0.82rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;">Impostos, Créditos e Despesas</summary>
+        <div class="grid-2" style="margin-top:12px;">
+          <div>
+            <div style="font-size:0.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Alíquotas Globais</div>
+            <div class="grid-4" style="grid-template-columns: repeat(4, 1fr);">
+              <div class="field">
+                <label>PIS %</label>
+                <input type="number" id="m_pis_aliq" value="2.10" step="0.01" min="0" max="100" oninput="calcMulti()">
+              </div>
+              <div class="field">
+                <label>COFINS %</label>
+                <input type="number" id="m_cofins_aliq" value="9.65" step="0.01" min="0" max="100" oninput="calcMulti()">
+              </div>
+              <div class="field">
+                <label>ICMS %</label>
+                <input type="number" id="m_icms_aliq" value="20.5" step="0.01" min="0" max="100" oninput="calcMulti()">
+              </div>
+              <div class="field">
+                <label>IPI fallback %</label>
+                <input type="number" id="m_ipi_aliq" value="0" step="0.01" min="0" max="100" oninput="calcMulti()" title="Usado apenas para produtos sem NCM definido">
+              </div>
+            </div>
+            <div id="m_adic_cofins_row" class="grid-4" style="margin-top:6px;grid-template-columns: repeat(4, 1fr);">
+              <div class="field">
+                <label>Adic. COFINS %</label>
+                <input type="number" id="m_adic_cofins" value="0" step="0.01" min="0" max="5" oninput="calcMulti()" title="0.6% em 2026 para NCMs específicos">
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Créditos</div>
+            <div class="grid-4" style="grid-template-columns: repeat(4, 1fr);">
+              <div class="field">
+                <label>ICMS</label>
+                <select id="m_icms_cred" onchange="calcMulti()"><option value="N">N</option><option value="S">S</option></select>
+              </div>
+              <div class="field">
+                <label>IPI</label>
+                <select id="m_ipi_cred" onchange="calcMulti()"><option value="N">N</option><option value="S">S</option></select>
+              </div>
+              <div class="field">
+                <label>PIS</label>
+                <select id="m_pis_cred" onchange="calcMulti()"><option value="N">N</option><option value="S">S</option></select>
+              </div>
+              <div class="field">
+                <label>COFINS</label>
+                <select id="m_cofins_cred" onchange="calcMulti()"><option value="N">N</option><option value="S">S</option></select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Despesas (rateadas por M3)</div>
+          <div class="grid-4" style="grid-template-columns: repeat(4, 1fr);">
             <div class="field">
               <label>Seguro (US$)</label>
               <input type="number" id="m_seguro" value="0" step="0.01" min="0" oninput="calcMulti()">
@@ -1723,60 +1779,8 @@
               <input type="number" id="m_amostras" value="140" step="0.01" min="0" oninput="calcMulti()">
             </div>
           </div>
-        </details>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Créditos de Impostos</div>
-        <div class="grid-4" style="grid-template-columns: repeat(4, 1fr);">
-          <div class="field">
-            <label>ICMS</label>
-            <select id="m_icms_cred" onchange="calcMulti()"><option value="N">N</option><option value="S">S</option></select>
-          </div>
-          <div class="field">
-            <label>IPI</label>
-            <select id="m_ipi_cred" onchange="calcMulti()"><option value="N">N</option><option value="S">S</option></select>
-          </div>
-          <div class="field">
-            <label>PIS</label>
-            <select id="m_pis_cred" onchange="calcMulti()"><option value="N">N</option><option value="S">S</option></select>
-          </div>
-          <div class="field">
-            <label>COFINS</label>
-            <select id="m_cofins_cred" onchange="calcMulti()"><option value="N">N</option><option value="S">S</option></select>
-          </div>
         </div>
-        <div class="grid-4" style="margin-top:8px;grid-template-columns: repeat(4, 1fr);">
-          <div class="field">
-            <label>IPI Aliq %</label>
-            <input type="number" id="m_ipi_aliq" value="0" step="0.01" min="0" max="100" oninput="calcMulti()">
-          </div>
-          <div class="field">
-            <label>PIS Aliq %</label>
-            <input type="number" id="m_pis_aliq" value="2.10" step="0.01" min="0" max="100" oninput="calcMulti()">
-          </div>
-          <div class="field">
-            <label>COFINS Aliq %</label>
-            <input type="number" id="m_cofins_aliq" value="9.65" step="0.01" min="0" max="100" oninput="calcMulti()">
-          </div>
-          <div class="field">
-            <label>ICMS Aliq %</label>
-            <input type="number" id="m_icms_aliq" value="20.5" step="0.01" min="0" max="100" oninput="calcMulti()">
-          </div>
-        </div>
-        <div id="m_adic_cofins_row" class="grid-4" style="margin-top:8px;grid-template-columns: repeat(4, 1fr);">
-          <div class="field">
-            <label>Adic. COFINS-Import. %</label>
-            <input type="number" id="m_adic_cofins" value="0" step="0.01" min="0" max="5" oninput="calcMulti()" title="Adicional COFINS-Importação (0.8% em 2025, 0.6% em 2026) para NCMs específicos">
-          </div>
-        </div>
-        <div style="margin-top:10px;padding:10px 12px;background:var(--gradient-surface);border:1px solid var(--border);border-radius:10px;">
-          <label style="font-size:0.85rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;display:block;margin-bottom:6px;">Estado de Destino (ICMS automático)</label>
-          <select id="m_estado" onchange="onStateChange('m')" style="width:100%;padding:12px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1.05rem;cursor:pointer;transition:all 0.2s;">
-            <option value="">-- Selecione o Estado --</option>
-          </select>
-        </div>
-      </div>
+      </details>
     </div>
 
     <div>
