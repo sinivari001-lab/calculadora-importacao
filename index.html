@@ -851,6 +851,43 @@
   }
   .audience-hint strong { color: var(--accent); font-weight: 700; }
 
+  /* Upload card */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: var(--surface2);
+    position: relative;
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .upload-zone input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  }
+  .upload-zone .upload-icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .upload-zone .upload-text { font-size: 0.85rem; color: var(--text2); }
+  .upload-zone .upload-text strong { color: var(--accent); }
+  .upload-summary {
+    margin-top: 10px; padding: 10px 14px; border-radius: var(--radius-sm);
+    background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25);
+    font-size: 0.8rem; color: var(--accent); display: none;
+  }
+  .upload-summary .filled-fields { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .upload-summary .filled-fields span {
+    padding: 2px 8px; background: rgba(16,185,129,0.15); border-radius: 4px;
+    font-size: 0.72rem; font-weight: 600;
+  }
+  .upload-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .upload-actions button {
+    padding: 6px 14px; font-size: 0.72rem; border-radius: 6px;
+    cursor: pointer; font-weight: 600; transition: all 0.2s;
+  }
+
   /* Visibility control per audience */
   .for-advanced { transition: all 0.3s; }
   [data-audience="iniciante"] .for-advanced,
@@ -1142,9 +1179,31 @@
 
   <!-- ==================== ABA 1: NCM UNICO ==================== -->
   <div id="tab-single" class="tab-content active">
-    <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px;gap:8px;">
       <button class="btn" onclick="clearSingle()" style="padding:6px 14px;font-size:0.7rem;color:var(--red);border:1px solid rgba(248,113,113,0.3);background:transparent;border-radius:8px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(248,113,113,0.1)'" onmouseout="this.style.background='transparent'">Limpar Campos</button>
     </div>
+
+    <!-- Upload Orçamento Logística -->
+    <div class="card for-advanced" id="uploadCard" style="margin-bottom:16px;">
+      <div class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Upload Orçamento da Logística</div>
+      <p style="font-size:0.78rem;color:var(--text2);margin-bottom:10px;">Importe o orçamento que a logística enviou (CSV ou JSON). Frete, impostos e despesas serão preenchidos automaticamente — você só precisa informar o <strong style="color:var(--accent);">produto, NCM, quantidade e valor unitário</strong>.</p>
+      <div class="upload-zone" id="uploadZone" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="event.preventDefault();this.classList.remove('dragover');handleUploadFile(event.dataTransfer.files[0])">
+        <div class="upload-icon">📂</div>
+        <div class="upload-text">Arraste o arquivo aqui ou <strong>clique para selecionar</strong></div>
+        <div style="font-size:0.7rem;color:var(--text3);margin-top:4px;">CSV ou JSON · Máx 1MB</div>
+        <input type="file" accept=".csv,.json,.txt" onchange="handleUploadFile(this.files[0]);this.value=''">
+      </div>
+      <div class="upload-actions">
+        <button onclick="downloadUploadTemplate('csv')" style="background:var(--surface2);border:1px solid var(--border);color:var(--accent);">⬇ Modelo CSV</button>
+        <button onclick="downloadUploadTemplate('json')" style="background:var(--surface2);border:1px solid var(--border);color:var(--accent);">⬇ Modelo JSON</button>
+        <button onclick="pasteUploadJSON()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);">📋 Colar JSON</button>
+      </div>
+      <div class="upload-summary" id="uploadSummary">
+        <div id="uploadSummaryText"></div>
+        <div class="filled-fields" id="uploadFilledFields"></div>
+      </div>
+    </div>
+
     <div class="grid-2">
       <div>
         <!-- Dados Gerais -->
@@ -4962,10 +5021,185 @@ function clearAllProducts() {
   renderProducts();
 }
 
+// ============================================================
+// UPLOAD ORÇAMENTO DA LOGÍSTICA
+// ============================================================
+const UPLOAD_FIELD_MAP = {
+  // Frete e Seguro
+  frete_internacional: 's_frete_int', frete_int: 's_frete_int', frete: 's_frete_int',
+  freight: 's_frete_int', ocean_freight: 's_frete_int', frete_maritimo: 's_frete_int',
+  frete_aereo: 's_frete_int', air_freight: 's_frete_int',
+  seguro: 's_seguro', insurance: 's_seguro', seguro_carga: 's_seguro',
+  // Despesas base ICMS
+  siscomex: 's_siscomex', taxa_siscomex: 's_siscomex',
+  capatazia: 's_capatazias', capatazias: 's_capatazias', thc: 's_capatazias',
+  terminal_handling: 's_capatazias',
+  afrmm: 's_afrmm', taxa_afrmm: 's_afrmm',
+  auditoria: 's_auditoria', auditoria_docs: 's_auditoria',
+  // Despesas extras
+  despachante: 's_despachante', despachante_aduaneiro: 's_despachante',
+  customs_broker: 's_despachante', honorarios: 's_despachante',
+  taxa_bl: 's_taxa_bl', liberacao_bl: 's_taxa_bl', bl_fee: 's_taxa_bl',
+  anatel: 's_anatel', taxa_anatel: 's_anatel',
+  frete_interno: 's_frete_interno', frete_rodoviario: 's_frete_interno',
+  inland_freight: 's_frete_interno', transporte_interno: 's_frete_interno',
+  armazenagem: 's_armazenagem', armazenagem_porto: 's_armazenagem',
+  storage: 's_armazenagem', demurrage: 's_armazenagem',
+  trading: 's_trading', comissao_trading: 's_trading',
+  antidumping: 's_antidumping', direito_antidumping: 's_antidumping',
+  // Impostos (aliquotas)
+  ii: 's_ii_aliq', ii_aliq: 's_ii_aliq', imposto_importacao: 's_ii_aliq',
+  ipi: 's_ipi_aliq', ipi_aliq: 's_ipi_aliq',
+  pis: 's_pis_aliq', pis_aliq: 's_pis_aliq', pis_importacao: 's_pis_aliq',
+  cofins: 's_cofins_aliq', cofins_aliq: 's_cofins_aliq', cofins_importacao: 's_cofins_aliq',
+  icms: 's_icms_aliq', icms_aliq: 's_icms_aliq',
+  adic_cofins: 's_adic_cofins', adicional_cofins: 's_adic_cofins',
+  // Dados gerais
+  dolar: 's_dolar', cambio: 's_dolar', exchange_rate: 's_dolar',
+};
+
+const UPLOAD_FIELD_LABELS = {
+  's_frete_int': 'Frete Int.', 's_seguro': 'Seguro',
+  's_siscomex': 'SISCOMEX', 's_capatazias': 'Capatazias',
+  's_afrmm': 'AFRMM', 's_auditoria': 'Auditoria',
+  's_despachante': 'Despachante', 's_taxa_bl': 'Taxa BL',
+  's_anatel': 'Anatel', 's_frete_interno': 'Frete Interno',
+  's_armazenagem': 'Armazenagem', 's_trading': 'Trading',
+  's_antidumping': 'Antidumping',
+  's_ii_aliq': 'II%', 's_ipi_aliq': 'IPI%',
+  's_pis_aliq': 'PIS%', 's_cofins_aliq': 'COFINS%',
+  's_icms_aliq': 'ICMS%', 's_adic_cofins': 'Adic.COFINS%',
+  's_dolar': 'Dólar',
+};
+
+function normalizeKey(key) {
+  return key.toString().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+}
+
+function handleUploadFile(file) {
+  if (!file) return;
+  if (file.size > 1048576) { alert('Arquivo muito grande (máx 1MB).'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    let data;
+    if (file.name.endsWith('.json') || text.trim().startsWith('{') || text.trim().startsWith('[')) {
+      try { data = JSON.parse(text); } catch { alert('JSON inválido.'); return; }
+      if (Array.isArray(data)) data = data[0];
+    } else {
+      data = parseCSV(text);
+    }
+    if (!data || typeof data !== 'object') { alert('Formato não reconhecido.'); return; }
+    applyUploadData(data);
+  };
+  reader.readAsText(file);
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/).filter(l => l.trim());
+  if (lines.length < 2) return null;
+  const sep = lines[0].includes(';') ? ';' : ',';
+  const headers = lines[0].split(sep).map(h => h.replace(/^["']|["']$/g, '').trim());
+  const values = lines[1].split(sep).map(v => v.replace(/^["']|["']$/g, '').trim());
+  const obj = {};
+  headers.forEach((h, i) => { if (values[i] !== undefined) obj[h] = values[i]; });
+  return obj;
+}
+
+function applyUploadData(data) {
+  // Switch to Formal + Completo
+  const tipoEl = document.getElementById('s_tipo_imp');
+  if (tipoEl) { tipoEl.value = 'formal'; onTipoImportacaoChange('s'); }
+  setAudience('completo');
+
+  // Expand hidden details sections
+  document.querySelectorAll('#tab-single details:not([open])').forEach(d => d.open = true);
+
+  const filled = [];
+  for (const [rawKey, rawVal] of Object.entries(data)) {
+    const key = normalizeKey(rawKey);
+    const fieldId = UPLOAD_FIELD_MAP[key];
+    if (!fieldId) continue;
+    const numVal = parseFloat(String(rawVal).replace(/[R$\s]/g, '').replace(',', '.'));
+    if (isNaN(numVal)) continue;
+    const el = document.getElementById(fieldId);
+    if (!el) continue;
+    el.value = numVal;
+    el.disabled = false;
+    filled.push(fieldId);
+  }
+
+  if (filled.length === 0) {
+    alert('Nenhum campo reconhecido no arquivo.\n\nUse o modelo CSV/JSON como referência.');
+    return;
+  }
+
+  // Show summary
+  const summary = document.getElementById('uploadSummary');
+  const summaryText = document.getElementById('uploadSummaryText');
+  const fieldsDiv = document.getElementById('uploadFilledFields');
+  summary.style.display = 'block';
+  summaryText.innerHTML = '✅ <strong>' + filled.length + ' campos</strong> preenchidos automaticamente. Agora preencha o <strong>produto, NCM, quantidade e valor unitário</strong>.';
+  fieldsDiv.innerHTML = filled.map(id => '<span>' + (UPLOAD_FIELD_LABELS[id] || id) + '</span>').join('');
+
+  calcSingle();
+
+  // Flash the product fields
+  ['s_ncm', 's_preco', 's_qtd'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.transition = 'box-shadow 0.3s';
+      el.style.boxShadow = '0 0 0 3px rgba(16,185,129,0.5)';
+      setTimeout(() => { el.style.boxShadow = ''; }, 2500);
+    }
+  });
+}
+
+function pasteUploadJSON() {
+  const json = prompt('Cole o JSON do orçamento aqui:');
+  if (!json) return;
+  try {
+    let data = JSON.parse(json);
+    if (Array.isArray(data)) data = data[0];
+    applyUploadData(data);
+  } catch { alert('JSON inválido.'); }
+}
+
+function downloadUploadTemplate(format) {
+  let content, filename, type;
+  if (format === 'csv') {
+    content = 'frete_internacional;seguro;siscomex;capatazia;afrmm;auditoria;despachante;taxa_bl;anatel;frete_interno;armazenagem;trading;antidumping;ii;ipi;pis;cofins;icms;adic_cofins;dolar\n0;0;0;0;0;0;0;0;0;0;0;0;0;18;5;2.10;9.65;20.5;0;5.70';
+    filename = 'modelo-orcamento-logistica.csv';
+    type = 'text/csv';
+  } else {
+    content = JSON.stringify({
+      frete_internacional: 0, seguro: 0,
+      siscomex: 0, capatazia: 0, afrmm: 0, auditoria: 0,
+      despachante: 0, taxa_bl: 0, anatel: 0, frete_interno: 0,
+      armazenagem: 0, trading: 0, antidumping: 0,
+      ii: 18, ipi: 5, pis: 2.10, cofins: 9.65, icms: 20.5, adic_cofins: 0,
+      dolar: 5.70
+    }, null, 2);
+    filename = 'modelo-orcamento-logistica.json';
+    type = 'application/json';
+  }
+  const blob = new Blob([content], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
 function clearSingle() {
   const fields = ['s_preco','s_qtd','s_frete_int','s_seguro','s_siscomex','s_capatazias','s_afrmm','s_auditoria','s_despachante','s_taxa_bl','s_anatel','s_frete_interno','s_armazenagem','s_trading','s_antidumping','s_preco_venda'];
   fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = '0'; });
   const ncm = document.getElementById('s_ncm'); if (ncm) ncm.value = '';
+  // Hide upload summary
+  const summary = document.getElementById('uploadSummary');
+  if (summary) summary.style.display = 'none';
   calcSingle();
 }
 

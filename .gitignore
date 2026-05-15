@@ -2,3 +2,5 @@
 node_modules/
 screenshots/
 .aios/
+
+.vercel
