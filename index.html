@@ -1432,6 +1432,27 @@
 
   <!-- ==================== ABA 2: MULTIPLOS NCMs ==================== -->
   <div id="tab-multi" class="tab-content">
+    <!-- Upload Orçamento Logística — Multi -->
+    <div class="card for-advanced" id="uploadCardMulti" style="margin-bottom:16px;">
+      <div class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Upload Orçamento + Produtos</div>
+      <p style="font-size:0.78rem;color:var(--text2);margin-bottom:10px;">Importe CSV/JSON com despesas <strong>e produtos</strong>. Cada linha do CSV com NCM/descrição/qtd/preço vira um produto na tabela. Despesas globais (frete, seguro, SISCOMEX...) são preenchidas automaticamente.</p>
+      <div class="upload-zone" id="uploadZoneMulti" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="event.preventDefault();this.classList.remove('dragover');handleMultiUploadFile(event.dataTransfer.files[0])">
+        <div class="upload-icon">📂</div>
+        <div class="upload-text">Arraste o arquivo aqui ou <strong>clique para selecionar</strong></div>
+        <div style="font-size:0.7rem;color:var(--text3);margin-top:4px;">CSV ou JSON · Produtos + Despesas</div>
+        <input type="file" accept=".csv,.json,.txt" onchange="handleMultiUploadFile(this.files[0]);this.value=''">
+      </div>
+      <div class="upload-actions">
+        <button onclick="downloadMultiTemplate('csv')" style="background:var(--surface2);border:1px solid var(--border);color:var(--accent);">⬇ Modelo CSV</button>
+        <button onclick="downloadMultiTemplate('json')" style="background:var(--surface2);border:1px solid var(--border);color:var(--accent);">⬇ Modelo JSON</button>
+        <button onclick="pasteMultiUploadJSON()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);">📋 Colar JSON</button>
+      </div>
+      <div class="upload-summary" id="uploadSummaryMulti">
+        <div id="uploadSummaryMultiText"></div>
+        <div class="filled-fields" id="uploadFilledFieldsMulti"></div>
+      </div>
+    </div>
+
     <!-- Dados Compartilhados - full width -->
     <div class="card">
       <div class="card-title">Dados Compartilhados</div>
@@ -5183,6 +5204,269 @@ function downloadUploadTemplate(format) {
       dolar: 5.70
     }, null, 2);
     filename = 'modelo-orcamento-logistica.json';
+    type = 'application/json';
+  }
+  const blob = new Blob([content], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ============================================================
+// UPLOAD MULTI — ORÇAMENTO + PRODUTOS
+// ============================================================
+const MULTI_FIELD_MAP = {
+  frete_internacional: 'm_frete', frete_int: 'm_frete', frete: 'm_frete',
+  freight: 'm_frete', ocean_freight: 'm_frete', frete_maritimo: 'm_frete',
+  frete_aereo: 'm_frete', air_freight: 'm_frete',
+  seguro: 'm_seguro', insurance: 'm_seguro', seguro_carga: 'm_seguro',
+  siscomex: 'm_siscomex', taxa_siscomex: 'm_siscomex',
+  capatazia: 'm_capatazia', capatazias: 'm_capatazia', thc: 'm_capatazia',
+  afrmm: 'm_afrmm', taxa_afrmm: 'm_afrmm',
+  outras: 'm_outras', outras_despesas: 'm_outras', outras_desp: 'm_outras',
+  despachante: 'm_despachante', despachante_aduaneiro: 'm_despachante',
+  customs_broker: 'm_despachante', honorarios: 'm_despachante',
+  taxa_bl: 'm_taxa_bl', liberacao_bl: 'm_taxa_bl', bl_fee: 'm_taxa_bl',
+  demurrage: 'm_demurrage',
+  frete_interno: 'm_frete_int', frete_rodoviario: 'm_frete_int',
+  inland_freight: 'm_frete_int', transporte_interno: 'm_frete_int',
+  armazenagem: 'm_armazenagem', armazenagem_porto: 'm_armazenagem', storage: 'm_armazenagem',
+  amostras: 'm_amostras',
+  pis: 'm_pis_aliq', pis_aliq: 'm_pis_aliq',
+  cofins: 'm_cofins_aliq', cofins_aliq: 'm_cofins_aliq',
+  icms: 'm_icms_aliq', icms_aliq: 'm_icms_aliq',
+  ipi: 'm_ipi_aliq', ipi_aliq: 'm_ipi_aliq',
+  adic_cofins: 'm_adic_cofins', adicional_cofins: 'm_adic_cofins',
+  dolar: 'm_dolar', cambio: 'm_dolar', exchange_rate: 'm_dolar',
+};
+
+const MULTI_FIELD_LABELS = {
+  'm_frete': 'Frete', 'm_seguro': 'Seguro', 'm_siscomex': 'SISCOMEX',
+  'm_capatazia': 'Capatazia', 'm_afrmm': 'AFRMM', 'm_outras': 'Outras',
+  'm_despachante': 'Despachante', 'm_taxa_bl': 'Taxa BL', 'm_demurrage': 'Demurrage',
+  'm_frete_int': 'Frete Interno', 'm_armazenagem': 'Armazenagem', 'm_amostras': 'Amostras',
+  'm_pis_aliq': 'PIS%', 'm_cofins_aliq': 'COFINS%', 'm_icms_aliq': 'ICMS%',
+  'm_ipi_aliq': 'IPI%', 'm_adic_cofins': 'Adic.COFINS%', 'm_dolar': 'Dólar',
+};
+
+const PRODUCT_COL_MAP = {
+  ncm: 'ncm', codigo_ncm: 'ncm', ncm_sh: 'ncm',
+  descricao: 'desc', desc: 'desc', produto: 'desc', description: 'desc', nome: 'desc',
+  quantidade: 'qtd', qtd: 'qtd', qty: 'qtd', unidades: 'qtd',
+  preco: 'price', preco_unitario: 'price', preco_unit: 'price', price: 'price',
+  valor_unitario: 'price', unit_price: 'price', valor_unit: 'price', fob_unit: 'price',
+  m3: 'm3', volume: 'm3', cbm: 'm3', volume_m3: 'm3',
+  ii: 'ii', ii_aliq: 'ii', imposto_importacao: 'ii',
+  ipi: 'ipi', ipi_aliq: 'ipi',
+};
+
+function parseCSVMultiRow(text) {
+  const lines = text.trim().split(/\r?\n/).filter(l => l.trim());
+  if (lines.length < 2) return null;
+  const sep = lines[0].includes(';') ? ';' : ',';
+  const headers = lines[0].split(sep).map(h => h.replace(/^["']|["']$/g, '').trim());
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const vals = lines[i].split(sep).map(v => v.replace(/^["']|["']$/g, '').trim());
+    const obj = {};
+    headers.forEach((h, j) => { if (vals[j] !== undefined) obj[h] = vals[j]; });
+    rows.push(obj);
+  }
+  return { headers, rows };
+}
+
+function handleMultiUploadFile(file) {
+  if (!file) return;
+  if (file.size > 1048576) { alert('Arquivo muito grande (máx 1MB).'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    let data;
+    if (file.name.endsWith('.json') || text.trim().startsWith('{') || text.trim().startsWith('[')) {
+      try { data = JSON.parse(text); } catch { alert('JSON inválido.'); return; }
+      applyMultiUploadJSON(data);
+    } else {
+      const parsed = parseCSVMultiRow(text);
+      if (!parsed || parsed.rows.length === 0) { alert('CSV vazio ou inválido.'); return; }
+      applyMultiUploadCSV(parsed);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function applyMultiUploadCSV(parsed) {
+  const filled = [];
+  const importedProducts = [];
+
+  // Check if rows have product columns
+  const colMap = {};
+  parsed.headers.forEach(h => {
+    const key = normalizeKey(h);
+    if (PRODUCT_COL_MAP[key]) colMap[PRODUCT_COL_MAP[key]] = h;
+  });
+  const hasProducts = colMap.ncm || colMap.desc;
+
+  // Fill global expense fields from first row
+  const firstRow = parsed.rows[0];
+  for (const [rawKey, rawVal] of Object.entries(firstRow)) {
+    const key = normalizeKey(rawKey);
+    const fieldId = MULTI_FIELD_MAP[key];
+    if (!fieldId) continue;
+    const numVal = parseFloat(String(rawVal).replace(/[R$\s]/g, '').replace(',', '.'));
+    if (isNaN(numVal)) continue;
+    const el = document.getElementById(fieldId);
+    if (!el) continue;
+    el.value = numVal;
+    el.disabled = false;
+    filled.push(fieldId);
+  }
+
+  // Extract products from all rows
+  if (hasProducts) {
+    for (const row of parsed.rows) {
+      const p = { ncm: '', desc: '', qtd: 0, price: 0, m3: 0, ii: 18, ipi: 0 };
+      if (colMap.ncm && row[colMap.ncm]) p.ncm = String(row[colMap.ncm]).replace(/[.\-\s]/g, '');
+      if (colMap.desc && row[colMap.desc]) p.desc = row[colMap.desc];
+      if (colMap.qtd && row[colMap.qtd]) p.qtd = parseFloat(String(row[colMap.qtd]).replace(',', '.')) || 0;
+      if (colMap.price && row[colMap.price]) p.price = parseFloat(String(row[colMap.price]).replace(/[R$\s]/g, '').replace(',', '.')) || 0;
+      if (colMap.m3 && row[colMap.m3]) p.m3 = parseFloat(String(row[colMap.m3]).replace(',', '.')) || 0;
+      if (colMap.ii && row[colMap.ii]) p.ii = parseFloat(String(row[colMap.ii]).replace(',', '.')) || 18;
+      if (colMap.ipi && row[colMap.ipi]) p.ipi = parseFloat(String(row[colMap.ipi]).replace(',', '.')) || 0;
+      // Look up NCM in table for II/IPI
+      if (p.ncm && typeof NCM_EXAMPLES !== 'undefined') {
+        const clean = p.ncm.replace(/\D/g, '');
+        const match = NCM_EXAMPLES.find(e => e.ncm.replace(/\D/g, '') === clean);
+        if (match) { p.ii = match.ii; p.ipi = match.ipi; if (!p.desc) p.desc = match.prod; }
+      }
+      if (p.ncm || p.desc) importedProducts.push(p);
+    }
+  }
+
+  // Apply products
+  if (importedProducts.length > 0) {
+    products = importedProducts;
+    renderProducts();
+  }
+
+  // Expand details
+  document.querySelectorAll('#tab-multi details:not([open])').forEach(d => d.open = true);
+
+  showMultiUploadSummary(filled, importedProducts.length);
+  calcMulti();
+}
+
+function applyMultiUploadJSON(data) {
+  const filled = [];
+  let importedProducts = [];
+
+  // JSON format: { despesas: {...}, produtos: [...] } or just array of products or flat object
+  let expenses = {};
+  let prods = [];
+
+  if (Array.isArray(data)) {
+    prods = data;
+  } else if (data.produtos && Array.isArray(data.produtos)) {
+    prods = data.produtos;
+    expenses = data.despesas || data;
+  } else if (data.products && Array.isArray(data.products)) {
+    prods = data.products;
+    expenses = data.expenses || data;
+  } else {
+    expenses = data;
+  }
+
+  // Fill expenses
+  for (const [rawKey, rawVal] of Object.entries(expenses)) {
+    if (rawKey === 'produtos' || rawKey === 'products') continue;
+    const key = normalizeKey(rawKey);
+    const fieldId = MULTI_FIELD_MAP[key];
+    if (!fieldId) continue;
+    const numVal = parseFloat(String(rawVal).replace(/[R$\s]/g, '').replace(',', '.'));
+    if (isNaN(numVal)) continue;
+    const el = document.getElementById(fieldId);
+    if (!el) continue;
+    el.value = numVal;
+    el.disabled = false;
+    filled.push(fieldId);
+  }
+
+  // Fill products
+  for (const row of prods) {
+    const p = { ncm: '', desc: '', qtd: 0, price: 0, m3: 0, ii: 18, ipi: 0 };
+    for (const [rawKey, rawVal] of Object.entries(row)) {
+      const key = normalizeKey(rawKey);
+      const target = PRODUCT_COL_MAP[key];
+      if (!target) continue;
+      if (target === 'ncm') p.ncm = String(rawVal).replace(/[.\-\s]/g, '');
+      else if (target === 'desc') p.desc = String(rawVal);
+      else { const n = parseFloat(String(rawVal).replace(',', '.')); if (!isNaN(n)) p[target] = n; }
+    }
+    if (p.ncm && typeof NCM_EXAMPLES !== 'undefined') {
+      const clean = p.ncm.replace(/\D/g, '');
+      const match = NCM_EXAMPLES.find(e => e.ncm.replace(/\D/g, '') === clean);
+      if (match) { p.ii = match.ii; p.ipi = match.ipi; if (!p.desc) p.desc = match.prod; }
+    }
+    if (p.ncm || p.desc) importedProducts.push(p);
+  }
+
+  if (importedProducts.length > 0) {
+    products = importedProducts;
+    renderProducts();
+  }
+
+  document.querySelectorAll('#tab-multi details:not([open])').forEach(d => d.open = true);
+  showMultiUploadSummary(filled, importedProducts.length);
+  calcMulti();
+}
+
+function showMultiUploadSummary(filled, productCount) {
+  const summary = document.getElementById('uploadSummaryMulti');
+  const summaryText = document.getElementById('uploadSummaryMultiText');
+  const fieldsDiv = document.getElementById('uploadFilledFieldsMulti');
+  if (filled.length === 0 && productCount === 0) {
+    alert('Nenhum campo ou produto reconhecido.\n\nUse o modelo CSV/JSON como referência.');
+    return;
+  }
+  summary.style.display = 'block';
+  const parts = [];
+  if (filled.length > 0) parts.push('<strong>' + filled.length + ' campos</strong> de despesas');
+  if (productCount > 0) parts.push('<strong>' + productCount + ' produto' + (productCount > 1 ? 's' : '') + '</strong> importados');
+  summaryText.innerHTML = '✅ ' + parts.join(' + ') + ' preenchidos automaticamente.';
+  fieldsDiv.innerHTML = filled.map(id => '<span>' + (MULTI_FIELD_LABELS[id] || id) + '</span>').join('') +
+    (productCount > 0 ? '<span style="background:rgba(59,130,246,0.15);color:var(--blue);">' + productCount + ' produtos</span>' : '');
+}
+
+function pasteMultiUploadJSON() {
+  const json = prompt('Cole o JSON do orçamento aqui:');
+  if (!json) return;
+  try {
+    const data = JSON.parse(json);
+    applyMultiUploadJSON(data);
+  } catch { alert('JSON inválido.'); }
+}
+
+function downloadMultiTemplate(format) {
+  let content, filename, type;
+  if (format === 'csv') {
+    content = 'ncm;descricao;quantidade;preco_unitario;m3;frete;seguro;siscomex;capatazia;afrmm;despachante;taxa_bl;demurrage;frete_interno;armazenagem;amostras;dolar\n39269090;Capinhas Silicone;300;0.67;1;850;120;300;450;68;1200;350;0;500;280;140;5.70\n85183000;Fones Bluetooth;100;2.50;1;;;;;;;;;;;;\n96082000;Canetas Touch;200;0.15;0.5;;;;;;;;;;;\n';
+    filename = 'modelo-orcamento-multi.csv';
+    type = 'text/csv';
+  } else {
+    content = JSON.stringify({
+      despesas: {
+        frete: 850, seguro: 120, siscomex: 300, capatazia: 450, afrmm: 68,
+        despachante: 1200, taxa_bl: 350, demurrage: 0, frete_interno: 500,
+        armazenagem: 280, amostras: 140, dolar: 5.70
+      },
+      produtos: [
+        { ncm: '39269090', descricao: 'Capinhas Silicone', quantidade: 300, preco_unitario: 0.67, m3: 1 },
+        { ncm: '85183000', descricao: 'Fones Bluetooth', quantidade: 100, preco_unitario: 2.50, m3: 1 },
+        { ncm: '96082000', descricao: 'Canetas Touch', quantidade: 200, preco_unitario: 0.15, m3: 0.5 }
+      ]
+    }, null, 2);
+    filename = 'modelo-orcamento-multi.json';
     type = 'application/json';
   }
   const blob = new Blob([content], { type });
