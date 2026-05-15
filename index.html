@@ -6248,10 +6248,12 @@ const THEME_ICON_LIGHT = '<svg width="14" height="14" viewBox="0 0 24 24" fill="
 const TOUR_STEPS = [
   // ABA 1: NCM Unico
   { el: '.tabs', title: 'NCM Unico', body: 'Calcule o custo de <strong>1 produto</strong>.<br>Preencha preco, quantidade, NCM e frete.<br>Resultado: <strong>custo unitario em reais</strong> com todos os impostos.', pos: 'bottom', tab: 'single' },
+  { el: '#uploadCard', title: 'Upload Orcamento', body: 'Importou formal? A logistica mandou o orcamento?<br><strong>Arraste o CSV/JSON</strong> aqui e frete, impostos e despesas preenchem sozinhos.<br>Voce so informa o <strong>produto, NCM, quantidade e preco</strong>.', pos: 'bottom' },
   { el: '#s_ncm', title: 'Busque o produto', body: 'Digite o nome (ex: "fone") ou o codigo NCM.<br>Os impostos <strong>preenchem sozinhos</strong>.', pos: 'bottom' },
   { el: '#s_big_result', title: 'Resultado', body: 'Custo por unidade com <strong>todos os impostos</strong> incluidos.<br>Compare com seu preco de venda pra saber a margem.', pos: 'top' },
   // ABA 2: Multiplos NCMs
-  { el: '#tab-multi', title: 'Multiplos NCMs', body: '<strong>Varios produtos</strong> no mesmo envio.<br>Cada linha tem seu NCM e impostos proprios.<br>Frete rateado automaticamente por volume (m3).', pos: 'bottom', tab: 'multi', elFallback: '.tabs button:nth-child(2)' },
+  { el: '#uploadCardMulti', title: 'Upload Multi', body: 'Importando <strong>varios produtos</strong>?<br>Suba um CSV/JSON com a lista de produtos + despesas.<br>Cada linha vira um produto na tabela com NCM e impostos automaticos.', pos: 'bottom', tab: 'multi', elFallback: '.tabs button:nth-child(2)' },
+  { el: '#tab-multi .multi-table-wrap', title: 'Tabela de Produtos', body: '<strong>Varios produtos</strong> no mesmo envio.<br>Cada linha tem seu NCM e impostos proprios.<br>Frete rateado automaticamente por volume (m3).', pos: 'bottom', elFallback: '#tab-multi' },
   // ABA 3: Siscomex
   { el: '#tab-siscomex', title: 'Calculadora SISCOMEX', body: 'Taxa da Receita Federal na importacao formal.<br>Informe quantos <strong>NCMs diferentes</strong> tem na DI.<br>Resultado: valor exato da taxa.', pos: 'bottom', tab: 'siscomex', elFallback: '.tabs button:nth-child(3)' },
   // ABA 4: Frete
@@ -6262,6 +6264,8 @@ let tourActive = false;
 function openTour() {
   tourStep = 0;
   tourActive = true;
+  // Ensure upload cards are visible during tour
+  if (typeof setAudience === 'function') setAudience('completo');
   document.getElementById('tour-overlay').style.display = 'block';
   document.getElementById('tour-tooltip').style.display = 'block';
   renderTourStep();
