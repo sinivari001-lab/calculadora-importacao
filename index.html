@@ -1186,18 +1186,30 @@
     <!-- Upload Orçamento Logística -->
     <div class="card for-advanced" id="uploadCard" style="margin-bottom:16px;">
       <div class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Upload Orçamento da Logística</div>
-      <p style="font-size:0.78rem;color:var(--text2);margin-bottom:10px;">Importe o orçamento que a logística enviou (CSV ou JSON). Frete, impostos e despesas serão preenchidos automaticamente — você só precisa informar o <strong style="color:var(--accent);">produto, NCM, quantidade e valor unitário</strong>.</p>
-      <div class="upload-zone" id="uploadZone" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="event.preventDefault();this.classList.remove('dragover');handleUploadFile(event.dataTransfer.files[0])">
-        <div class="upload-icon">📂</div>
-        <div class="upload-text">Arraste o arquivo aqui ou <strong>clique para selecionar</strong></div>
-        <div style="font-size:0.7rem;color:var(--text3);margin-top:4px;">CSV ou JSON · Máx 1MB</div>
-        <input type="file" accept=".csv,.json,.txt" onchange="handleUploadFile(this.files[0]);this.value=''">
+      <p style="font-size:0.78rem;color:var(--text2);margin-bottom:10px;">Importe o orçamento da logística. <strong style="color:var(--accent);">Copie o texto do PDF</strong> e cole, ou suba CSV/JSON. Frete, impostos e despesas preenchem automaticamente.</p>
+      <!-- Paste area for PDF text -->
+      <div style="margin-bottom:10px;">
+        <textarea id="uploadPasteArea" placeholder="Cole aqui o texto do PDF da logística (Ctrl+V)&#10;&#10;Exemplo: Valor do Frete: USD 4.100,00 / ICMS 18,00% / Siscomex R$ 154,23..." style="width:100%;min-height:80px;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:0.82rem;font-family:'JetBrains Mono',monospace;resize:vertical;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button onclick="parsePastedPDF()" style="padding:8px 18px;background:var(--gradient-accent);border:none;border-radius:8px;font-size:0.8rem;font-weight:700;cursor:pointer;color:white;box-shadow:0 2px 8px var(--glow);transition:all 0.2s;">Importar Texto</button>
+          <button onclick="document.getElementById('uploadPasteArea').value=''" style="padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:0.75rem;cursor:pointer;color:var(--text3);">Limpar</button>
+        </div>
       </div>
-      <div class="upload-actions">
-        <button onclick="downloadUploadTemplate('csv')" style="background:var(--surface2);border:1px solid var(--border);color:var(--accent);">⬇ Modelo CSV</button>
-        <button onclick="downloadUploadTemplate('json')" style="background:var(--surface2);border:1px solid var(--border);color:var(--accent);">⬇ Modelo JSON</button>
-        <button onclick="pasteUploadJSON()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);">📋 Colar JSON</button>
-      </div>
+      <details style="margin-bottom:10px;">
+        <summary style="cursor:pointer;font-size:0.72rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;">Ou suba arquivo CSV / JSON</summary>
+        <div style="margin-top:8px;">
+          <div class="upload-zone" id="uploadZone" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="event.preventDefault();this.classList.remove('dragover');handleUploadFile(event.dataTransfer.files[0])">
+            <div class="upload-icon">📂</div>
+            <div class="upload-text">Arraste o arquivo aqui ou <strong>clique para selecionar</strong></div>
+            <div style="font-size:0.7rem;color:var(--text3);margin-top:4px;">CSV ou JSON · Máx 1MB</div>
+            <input type="file" accept=".csv,.json,.txt" onchange="handleUploadFile(this.files[0]);this.value=''">
+          </div>
+          <div class="upload-actions">
+            <button onclick="downloadUploadTemplate('csv')" style="background:var(--surface2);border:1px solid var(--border);color:var(--accent);">⬇ Modelo CSV</button>
+            <button onclick="downloadUploadTemplate('json')" style="background:var(--surface2);border:1px solid var(--border);color:var(--accent);">⬇ Modelo JSON</button>
+          </div>
+        </div>
+      </details>
       <div class="upload-summary" id="uploadSummary">
         <div id="uploadSummaryText"></div>
         <div class="filled-fields" id="uploadFilledFields"></div>
@@ -1435,18 +1447,30 @@
     <!-- Upload Orçamento Logística — Multi -->
     <div class="card for-advanced" id="uploadCardMulti" style="margin-bottom:16px;">
       <div class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Upload Orçamento + Produtos</div>
-      <p style="font-size:0.78rem;color:var(--text2);margin-bottom:10px;">Importe CSV/JSON com despesas <strong>e produtos</strong>. Cada linha do CSV com NCM/descrição/qtd/preço vira um produto na tabela. Despesas globais (frete, seguro, SISCOMEX...) são preenchidas automaticamente.</p>
-      <div class="upload-zone" id="uploadZoneMulti" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="event.preventDefault();this.classList.remove('dragover');handleMultiUploadFile(event.dataTransfer.files[0])">
-        <div class="upload-icon">📂</div>
-        <div class="upload-text">Arraste o arquivo aqui ou <strong>clique para selecionar</strong></div>
-        <div style="font-size:0.7rem;color:var(--text3);margin-top:4px;">CSV ou JSON · Produtos + Despesas</div>
-        <input type="file" accept=".csv,.json,.txt" onchange="handleMultiUploadFile(this.files[0]);this.value=''">
+      <p style="font-size:0.78rem;color:var(--text2);margin-bottom:10px;">Importe o orçamento da logística. <strong style="color:var(--accent);">Cole o texto do PDF</strong> ou suba CSV/JSON. Despesas preenchem automaticamente — depois adicione os produtos com NCM. Custos são rateados por <strong>m3</strong>.</p>
+      <!-- Paste area for PDF text -->
+      <div style="margin-bottom:10px;">
+        <textarea id="uploadPasteAreaMulti" placeholder="Cole aqui o texto do PDF da logística (Ctrl+V)&#10;&#10;Exemplo: Valor do Frete: USD 4.100,00 / Siscomex R$ 154,23 / Armazenagem R$ 4.200,00..." style="width:100%;min-height:80px;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:0.82rem;font-family:'JetBrains Mono',monospace;resize:vertical;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button onclick="parsePastedPDFMulti()" style="padding:8px 18px;background:var(--gradient-accent);border:none;border-radius:8px;font-size:0.8rem;font-weight:700;cursor:pointer;color:white;box-shadow:0 2px 8px var(--glow);transition:all 0.2s;">Importar Texto</button>
+          <button onclick="document.getElementById('uploadPasteAreaMulti').value=''" style="padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:0.75rem;cursor:pointer;color:var(--text3);">Limpar</button>
+        </div>
       </div>
-      <div class="upload-actions">
-        <button onclick="downloadMultiTemplate('csv')" style="background:var(--surface2);border:1px solid var(--border);color:var(--accent);">⬇ Modelo CSV</button>
-        <button onclick="downloadMultiTemplate('json')" style="background:var(--surface2);border:1px solid var(--border);color:var(--accent);">⬇ Modelo JSON</button>
-        <button onclick="pasteMultiUploadJSON()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);">📋 Colar JSON</button>
-      </div>
+      <details style="margin-bottom:10px;">
+        <summary style="cursor:pointer;font-size:0.72rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;">Ou suba arquivo CSV / JSON</summary>
+        <div style="margin-top:8px;">
+          <div class="upload-zone" id="uploadZoneMulti" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="event.preventDefault();this.classList.remove('dragover');handleMultiUploadFile(event.dataTransfer.files[0])">
+            <div class="upload-icon">📂</div>
+            <div class="upload-text">Arraste o arquivo aqui ou <strong>clique para selecionar</strong></div>
+            <div style="font-size:0.7rem;color:var(--text3);margin-top:4px;">CSV ou JSON · Produtos + Despesas</div>
+            <input type="file" accept=".csv,.json,.txt" onchange="handleMultiUploadFile(this.files[0]);this.value=''">
+          </div>
+          <div class="upload-actions">
+            <button onclick="downloadMultiTemplate('csv')" style="background:var(--surface2);border:1px solid var(--border);color:var(--accent);">⬇ Modelo CSV</button>
+            <button onclick="downloadMultiTemplate('json')" style="background:var(--surface2);border:1px solid var(--border);color:var(--accent);">⬇ Modelo JSON</button>
+          </div>
+        </div>
+      </details>
       <div class="upload-summary" id="uploadSummaryMulti">
         <div id="uploadSummaryMultiText"></div>
         <div class="filled-fields" id="uploadFilledFieldsMulti"></div>
@@ -5485,6 +5509,236 @@ function downloadMultiTemplate(format) {
   a.download = filename;
   a.click();
   URL.revokeObjectURL(a.href);
+}
+
+// ============================================================
+// PARSER DE TEXTO DO PDF DA LOGÍSTICA
+// ============================================================
+function parseBRNumber(str) {
+  if (!str) return 0;
+  // Handle BR format: 4.100,00 → 4100.00 or 154,23 → 154.23
+  let s = str.replace(/[R$USD\s]/g, '').trim();
+  if (s === '-' || s === '') return 0;
+  // If has both . and , → dot is thousands, comma is decimal
+  if (s.includes('.') && s.includes(',')) {
+    s = s.replace(/\./g, '').replace(',', '.');
+  } else if (s.includes(',')) {
+    s = s.replace(',', '.');
+  }
+  return parseFloat(s) || 0;
+}
+
+function parsePDFText(text) {
+  const data = {};
+  const t = text.replace(/\r\n/g, '\n');
+
+  // USD values
+  const freightMatch = t.match(/(?:valor\s+d[eo]\s+frete|frete\s*(?:mar[ií]timo|a[eé]reo)?)\s*[:.]?\s*(?:USD|U\$|US\$)\s*([\d.,]+)/i);
+  if (freightMatch) data.frete_int_usd = parseBRNumber(freightMatch[1]);
+
+  const taxasOrigemMatch = t.match(/taxas?\s+(?:de\s+)?origem\s*[:.]?\s*(?:USD|U\$|US\$)\s*([\d.,]+)/i);
+  if (taxasOrigemMatch) data.taxas_origem_usd = parseBRNumber(taxasOrigemMatch[1]);
+
+  const valorMercMatch = t.match(/valor\s+d[ao]\s+merc[a-z]*\s*[:.]?\s*(?:USD|U\$|US\$)\s*([\d.,]+)/i);
+  if (valorMercMatch) data.valor_merc_usd = parseBRNumber(valorMercMatch[1]);
+
+  // Exchange rate
+  const dolarMatch = t.match(/taxa\s+d[eo]\s+d[oó]lar\s*([\d.,]+)/i) || t.match(/c[aâ]mbio\s*[:.]?\s*([\d.,]+)/i);
+  if (dolarMatch) data.dolar = parseBRNumber(dolarMatch[1]);
+
+  // Tax rates (percentages)
+  const iiMatch = t.match(/(?:imposto\s+de\s+importa[cç][aã]o|I\.?I\.?)\s*(?:\(.*?\))?\s*([\d.,]+)\s*%/i);
+  if (iiMatch) data.ii = parseBRNumber(iiMatch[1]);
+
+  const ipiMatch = t.match(/(?:imposto\s+de?\s+produto\s+indust[^)]*?|I\.?P\.?I\.?)\s*(?:\(.*?\))?\s*([\d.,]+)\s*%/i);
+  if (ipiMatch) data.ipi = parseBRNumber(ipiMatch[1]);
+
+  const icmsMatch = t.match(/ICMS\s*([\d.,]+)\s*%/i);
+  if (icmsMatch) data.icms = parseBRNumber(icmsMatch[1]);
+
+  const pisMatch = t.match(/PIS\s*([\d.,]+)\s*%/i);
+  if (pisMatch) data.pis = parseBRNumber(pisMatch[1]);
+
+  const cofinsMatch = t.match(/(?:COFINS|Confins)\s*([\d.,]+)\s*%/i);
+  if (cofinsMatch) data.cofins = parseBRNumber(cofinsMatch[1]);
+
+  // BRL values (expenses)
+  const siscomexMatch = t.match(/(?:taxa\s+de\s+)?siscomex\s*R?\$?\s*([\d.,]+)/i);
+  if (siscomexMatch) data.siscomex = parseBRNumber(siscomexMatch[1]);
+
+  const freteMarMatch = t.match(/frete\s+mar[ií]timo\s*\+?\s*taxas?\s*R?\$?\s*([\d.,]+)/i);
+  if (freteMarMatch) data.frete_maritimo_brl = parseBRNumber(freteMarMatch[1]);
+
+  const capataziaMatch = t.match(/capatazia[s]?\s*R?\$?\s*([\d.,]+)/i);
+  if (capataziaMatch && parseBRNumber(capataziaMatch[1]) > 0) data.capatazias = parseBRNumber(capataziaMatch[1]);
+
+  const afrmmMatch = t.match(/(?:marinha\s+mercante|AFRMM)\s*R?\$?\s*([\d.,]+)/i);
+  if (afrmmMatch) data.afrmm = parseBRNumber(afrmmMatch[1]);
+
+  const armazMatch = t.match(/armazenagem\s*(?:\w+)?\s*R?\$?\s*([\d.,]+)/i);
+  if (armazMatch) data.armazenagem = parseBRNumber(armazMatch[1]);
+
+  const transpMatch = t.match(/(?:transporte\s+rodovi[aá]rio|frete\s+(?:interno|rodoviario))\s*(?:\w+)?\s*R?\$?\s*([\d.,]+)/i);
+  if (transpMatch && parseBRNumber(transpMatch[1]) > 0) data.frete_interno = parseBRNumber(transpMatch[1]);
+
+  // S.D.A.S. / Despachante / Honorários
+  const sdasMatch = t.match(/S\.?D\.?A\.?S\.?\s*R?\$?\s*([\d.,]+)/i);
+  if (sdasMatch) data.despachante = parseBRNumber(sdasMatch[1]);
+
+  const despMatch = t.match(/(?:despachante|honor[aá]rios)\s*(?:aduaneiro)?\s*R?\$?\s*([\d.,]+)/i);
+  if (despMatch && !sdasMatch) data.despachante = parseBRNumber(despMatch[1]);
+
+  const comissaoMatch = t.match(/comiss[aã]o\s*R?\$?\s*([\d.,]+)/i);
+  if (comissaoMatch) data.trading = parseBRNumber(comissaoMatch[1]);
+
+  const expedienteMatch = t.match(/expediente\s*R?\$?\s*([\d.,]+)/i);
+  if (expedienteMatch) data.auditoria = parseBRNumber(expedienteMatch[1]);
+
+  const desconsolidacaoMatch = t.match(/desconsolida[cç][aã]o\s*R?\$?\s*([\d.,]+)/i);
+  if (desconsolidacaoMatch && parseBRNumber(desconsolidacaoMatch[1]) > 0) data.taxa_bl = parseBRNumber(desconsolidacaoMatch[1]);
+
+  const liMatch = t.match(/emiss[aã]o\s+de\s+LI\s*R?\$?\s*([\d.,]+)/i);
+  if (liMatch && parseBRNumber(liMatch[1]) > 0) data.anatel = parseBRNumber(liMatch[1]);
+
+  // NCM
+  const ncmMatch = t.match(/NCM\s*[:.]?\s*([\d\s.]+\d)/i);
+  if (ncmMatch) data.ncm = ncmMatch[1].replace(/[\s.]/g, '');
+
+  // Mercadoria/Produto
+  const mercMatch = t.match(/mercadoria\s*[:.]?\s*(.+?)(?:\s+valor|\s*$)/im);
+  if (mercMatch) data.mercadoria = mercMatch[1].trim();
+
+  return data;
+}
+
+function parsePastedPDF() {
+  const text = document.getElementById('uploadPasteArea').value.trim();
+  if (!text) { alert('Cole o texto do PDF primeiro.'); return; }
+
+  const data = parsePDFText(text);
+  if (Object.keys(data).length === 0) { alert('Nenhum dado reconhecido no texto.\n\nCertifique-se de copiar o texto completo do PDF da logística.'); return; }
+
+  // Switch to Formal + Completo
+  const tipoEl = document.getElementById('s_tipo_imp');
+  if (tipoEl) { tipoEl.value = 'formal'; onTipoImportacaoChange('s'); }
+  setAudience('completo');
+  document.querySelectorAll('#tab-single details:not([open])').forEach(d => d.open = true);
+
+  const filled = [];
+
+  // Dolar
+  if (data.dolar) { document.getElementById('s_dolar').value = data.dolar; filled.push('s_dolar'); }
+
+  // Frete: prefer USD value, fall back to BRL converted
+  if (data.frete_int_usd) {
+    document.getElementById('s_frete_int').value = data.frete_int_usd + (data.taxas_origem_usd || 0);
+    filled.push('s_frete_int');
+  } else if (data.frete_maritimo_brl && data.dolar) {
+    document.getElementById('s_frete_int').value = (data.frete_maritimo_brl / data.dolar).toFixed(2);
+    filled.push('s_frete_int');
+  }
+
+  // Tax rates
+  if (data.ii) { document.getElementById('s_ii_aliq').value = data.ii; document.getElementById('s_ii_aliq').disabled = false; filled.push('s_ii_aliq'); }
+  if (data.ipi) { document.getElementById('s_ipi_aliq').value = data.ipi; document.getElementById('s_ipi_aliq').disabled = false; filled.push('s_ipi_aliq'); }
+  if (data.pis) { document.getElementById('s_pis_aliq').value = data.pis; document.getElementById('s_pis_aliq').disabled = false; filled.push('s_pis_aliq'); }
+  if (data.cofins) { document.getElementById('s_cofins_aliq').value = data.cofins; document.getElementById('s_cofins_aliq').disabled = false; filled.push('s_cofins_aliq'); }
+  if (data.icms) { document.getElementById('s_icms_aliq').value = data.icms; document.getElementById('s_icms_aliq').disabled = false; filled.push('s_icms_aliq'); }
+
+  // BRL expenses
+  const brlMap = {
+    siscomex: 's_siscomex', capatazias: 's_capatazias', afrmm: 's_afrmm',
+    armazenagem: 's_armazenagem', frete_interno: 's_frete_interno',
+    despachante: 's_despachante', trading: 's_trading', auditoria: 's_auditoria',
+    taxa_bl: 's_taxa_bl', anatel: 's_anatel'
+  };
+  for (const [key, fieldId] of Object.entries(brlMap)) {
+    if (data[key]) {
+      const el = document.getElementById(fieldId);
+      if (el) { el.value = data[key]; filled.push(fieldId); }
+    }
+  }
+
+  // NCM
+  if (data.ncm) {
+    const ncmEl = document.getElementById('s_ncm');
+    if (ncmEl) { ncmEl.value = data.ncm; onNCMInput('s', data.ncm); filled.push('s_ncm'); }
+  }
+
+  // Show summary
+  const summary = document.getElementById('uploadSummary');
+  const summaryText = document.getElementById('uploadSummaryText');
+  const fieldsDiv = document.getElementById('uploadFilledFields');
+  summary.style.display = 'block';
+  const allLabels = { ...UPLOAD_FIELD_LABELS, 's_ncm': 'NCM' };
+  summaryText.innerHTML = '✅ <strong>' + filled.length + ' campos</strong> preenchidos do PDF.' +
+    (data.mercadoria ? ' Produto: <strong>' + data.mercadoria + '</strong>.' : '') +
+    (!data.ncm ? ' Preencha <strong>quantidade e valor unitário</strong>.' : '');
+  fieldsDiv.innerHTML = filled.map(id => '<span>' + (allLabels[id] || id) + '</span>').join('');
+
+  calcSingle();
+
+  // Flash unfilled critical fields
+  ['s_preco', 's_qtd'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && (!el.value || el.value === '0')) {
+      el.style.transition = 'box-shadow 0.3s';
+      el.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.5)';
+      setTimeout(() => { el.style.boxShadow = ''; }, 3000);
+    }
+  });
+}
+
+function parsePastedPDFMulti() {
+  const text = document.getElementById('uploadPasteAreaMulti').value.trim();
+  if (!text) { alert('Cole o texto do PDF primeiro.'); return; }
+
+  const data = parsePDFText(text);
+  if (Object.keys(data).length === 0) { alert('Nenhum dado reconhecido no texto.'); return; }
+
+  const filled = [];
+
+  // Dolar
+  if (data.dolar) { document.getElementById('m_dolar').value = data.dolar; filled.push('m_dolar'); }
+
+  // Frete USD
+  if (data.frete_int_usd) {
+    document.getElementById('m_frete').value = data.frete_int_usd + (data.taxas_origem_usd || 0);
+    filled.push('m_frete');
+  } else if (data.frete_maritimo_brl && data.dolar) {
+    document.getElementById('m_frete').value = (data.frete_maritimo_brl / data.dolar).toFixed(2);
+    filled.push('m_frete');
+  }
+
+  // Tax rates
+  if (data.pis) { document.getElementById('m_pis_aliq').value = data.pis; filled.push('m_pis_aliq'); }
+  if (data.cofins) { document.getElementById('m_cofins_aliq').value = data.cofins; filled.push('m_cofins_aliq'); }
+  if (data.icms) { document.getElementById('m_icms_aliq').value = data.icms; filled.push('m_icms_aliq'); }
+
+  // BRL expenses
+  const brlMap = {
+    siscomex: 'm_siscomex', capatazias: 'm_capatazia', afrmm: 'm_afrmm',
+    armazenagem: 'm_armazenagem', frete_interno: 'm_frete_int',
+    despachante: 'm_despachante', trading: 'm_outras', auditoria: 'm_outras',
+    taxa_bl: 'm_taxa_bl'
+  };
+  for (const [key, fieldId] of Object.entries(brlMap)) {
+    if (data[key]) {
+      const el = document.getElementById(fieldId);
+      if (el) {
+        // For 'm_outras', accumulate values
+        if (fieldId === 'm_outras') el.value = (parseFloat(el.value) || 0) + data[key];
+        else el.value = data[key];
+        if (!filled.includes(fieldId)) filled.push(fieldId);
+      }
+    }
+  }
+
+  // Expand details
+  document.querySelectorAll('#tab-multi details:not([open])').forEach(d => d.open = true);
+
+  showMultiUploadSummary(filled, 0);
+  calcMulti();
 }
 
 function clearSingle() {
